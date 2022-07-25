@@ -25,7 +25,7 @@ class AResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_api_route_params(cls, content: Any, status_code: int):
+    def from_api_route_params(cls, content: Any, status_code: int, **others):
         return cls(
             data=content,
             error=status_code >= 400
@@ -61,4 +61,6 @@ def test_from_exception_handler(fake_request):
 
 
 def test_from_api_route_params():
-    resp = WrappedResponseModel.from_api
+    resp = WrappedResponseModel.from_api_route_params(content="hello", status_code=201)
+    assert not resp.error
+    assert resp.data == "hello"
