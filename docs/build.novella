@@ -1,0 +1,23 @@
+
+template "mkdocs" {
+    content_directory = "content"
+}
+
+action "mkdocs-update-config" {
+    site_name = "FastAPI Response Schema"
+    update '$.theme.features' add: [
+        'navigation.tracking',
+        'navigation.instant',
+        'navigation.tabs',
+        'navigation.expand',
+        'navigation.top',
+        'toc.integrate',
+        'search.suggest',
+        'search.highlight',
+        'search.share'
+    ]
+}
+
+action "preprocess-markdown" {
+  use "pydoc"
+}

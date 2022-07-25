@@ -1,0 +1,36 @@
+site_name: FastAPI Response Schema
+
+theme:
+  name: material
+  language: en
+  icon:
+    logo: fontawesome/solid/meteor
+    repo: fontawesome/brands/git-alt
+  font:
+    text: Fira Sans
+    code: Fira Code
+  palette:
+    # Toggle light mode
+    - scheme: default
+      primary: orange
+      accent: teal
+      toggle:
+        icon: fontawesome/solid/moon
+        name: Dark mode
+    - scheme: slate
+      primary: teal
+      accent: orange
+      toggle:
+        icon: fontawesome/regular/lightbulb
+        name: Light mode
+
+plugins:
+  - search:
+      lang: en
+  - tags
+
+nav:
+    - Guide: 'index.md'
+    - API: 
+      - Interfaces: 'api/interfaces.md'
+      - Exceptions: 'api/exceptions.md'
