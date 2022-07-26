@@ -35,3 +35,4 @@ nav:
       - Interfaces: 'api/interfaces.md'
       - Exceptions: 'api/exceptions.md'
       - Routing: 'api/routing.md'
+      - Helpers: 'api/helpers.md'

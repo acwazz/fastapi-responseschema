@@ -20,7 +20,7 @@ from .interfaces import AbstractResponseSchema, ResponseWithMetadata
 
 class SchemaAPIRoute(APIRoute):
     """An APIRoute class to wrap response_model(s) with a ResponseSchema
-    Must be subclassed.
+    Must be subclassed setting at least SchemaAPIRoute.response_model.
 
     Usage:
     
@@ -42,7 +42,7 @@ class SchemaAPIRoute(APIRoute):
     error_response_schema: Optional[Type[AbstractResponseSchema[Any]]] = None
 
     def __init_subclass__(cls, **kwargs):
-        if not hasattr(cls, 'response_schema'):
+        if not hasattr(cls, 'response_schema') or getattr(cls, "response_schema") is None:
             raise AttributeError("`response_schema` must be defined in subclass.")
         return super().__init_subclass__(**kwargs)
     
@@ -78,30 +78,28 @@ class SchemaAPIRoute(APIRoute):
 
         Args:
             wrapper_model (Type[AbstractResponseSchema[Any]]): ResponseSchema Model
-            response_model (Type[Any]): _description_
+            response_model (Type[Any]): response_model set for APIRoute
 
         Returns:
-            Type[AbstractResponseSchema[Any]]: _description_
+            Type[AbstractResponseSchema[Any]]: The response_model wrapped in response_schema
         """
         return wrapper_model[response_model]
 
     def _wrap_endpoint_output(self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Any:
-        if isinstance(endpoint_output, ResponseWithMetadata):
+        if isinstance(endpoint_output, ResponseWithMetadata):  # Handling the `respond` function
             params.update(endpoint_output.metadata)
             content = endpoint_output.response_content
         else:
             content = endpoint_output
-        if response_model:
-            return wrapper_model[response_model].from_api_route_params(
-                content=content,
-                response_model=response_model,
-                **params
-            )
-        return content
+        return wrapper_model[response_model].from_api_route_params(
+            content=content,
+            response_model=response_model,
+            **params
+        )
 
     def _create_endpoint_handler_decorator(self, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Callable:
         def decorator(func):
-            if asyncio.iscoroutinefunction(func):  # Not messing up asncyio loop
+            if asyncio.iscoroutinefunction(func):  # Not blocking asncyio loop
                 @wraps(func)
                 async def wrapper(*args, **kwargs):
                     endpoint_output = await func(*args, **kwargs)
@@ -151,9 +149,8 @@ class SchemaAPIRoute(APIRoute):
         dependency_overrides_provider: Optional[Any] = None, 
         callbacks: Optional[List["APIRoute"]] = None
     ) -> None:
-        is_error_state = self.is_error_state(status_code=status_code)
-        if response_model:
-            WrapperModel = self.get_wrapper_model(is_error=is_error_state)
+        if response_model:  # If a `response_model` is set, then wrap the `response_model` with a response schema
+            WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code))
             endpoint_wrapper = self._create_endpoint_handler_decorator(
                 path=path,
                 wrapper_model=WrapperModel,
