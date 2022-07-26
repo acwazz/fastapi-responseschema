@@ -5,15 +5,10 @@ from fastapi import FastAPI
 from fastapi_responseschema import AbstractResponseSchema, SchemaAPIRoute, wrap_app_responses
 from fastapi_pagination import paginate, Page, Params
 
-
-class Item(BaseModel):
-    id: int
-    name: str
-
-
 T = TypeVar("T")
 
 
+# Build your "Response Schema"
 class ResponseMetadata(BaseModel):
     error: bool
     message: Optional[str]
@@ -38,17 +33,22 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
 
+# Create an APIRoute
 class Route(SchemaAPIRoute):
     response_schema = ResponseSchema
 
-
+# Setup you FastAPI app
 app = FastAPI()
 wrap_app_responses(app, Route)
 
-@app.get("/", response_model=Page[Item], description="This is a route")
-def get_operation():
-    return paginate([Item(id=0, name="ddd"), Item(id=1, name="ciao")])
+class Item(BaseModel):
+    id: int
+    name: str
 
+
+@app.get("/", response_model=Item, description="This is a route")
+def get_operation():
+    return [Item(id=0, name="ciao"), Item(id=1, name="hola"), Item(id=1, name="hello")]
 
 
 
