@@ -1,11 +1,13 @@
 site_name: FastAPI Response Schema
+repo_url: https://github.com/acwazz/fastapi-responseschema
+repo_name: fastapi-responseschema
 
 theme:
   name: material
   language: en
   icon:
     logo: fontawesome/solid/meteor
-    repo: fontawesome/brands/git-alt
+    repo: fontawesome/brands/github
   font:
     text: Fira Sans
     code: Fira Code
@@ -30,9 +32,15 @@ plugins:
   - tags
 
 nav:
-    - Guide: 'index.md'
+    - Guide: 
+      - Prelude: 'index.md'
+      - Schemas: 'guide/schemas.md'
+      - Routing: 'guide/api_routes.md'
+      - Utilities: 'guide/utilities.md'
+      - Pagination: 'guide/pagination_integration.md'
     - API: 
       - Interfaces: 'api/interfaces.md'
       - Exceptions: 'api/exceptions.md'
       - Routing: 'api/routing.md'
       - Helpers: 'api/helpers.md'
+    - Contibuting: 'contributing.md'

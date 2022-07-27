@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Union, Optional, Dict, Any
+from typing import Optional, Dict, Any
 from starlette import status
 from fastapi.exceptions import HTTPException as FastAPIHTTPException
 

@@ -24,8 +24,7 @@ TResponseSchema= TypeVar("TResponseSchema", bound="AbstractResponseSchema")
 
 
 class AbstractResponseSchema(GenericModel, Generic[T], ABC):
-    """Abstract generic model for building response schemas interfaces.
-    """
+    """Abstract generic model for building response schema interfaces."""
     @classmethod
     @abstractmethod
     def from_api_route_params(

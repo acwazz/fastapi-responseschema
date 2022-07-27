@@ -2,6 +2,5 @@
 hide:
   - footer
 ---
-# Intro
 
-@cat ../../README.md :with slice_lines = "2:104"
+@cat ../../README.md :with slice_lines = "2:105"

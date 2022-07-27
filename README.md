@@ -20,7 +20,7 @@ pip install fastapi-responseschema[pagination]
 
 This is just a prelude:
 ```py
-from typing import Generic, TypeVar, Any, Optional
+from typing import Generic, TypeVar, Any, Optional, List
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi_responseschema import AbstractResponseSchema, SchemaAPIRoute, wrap_app_responses
@@ -47,7 +47,9 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_api_route_params(cls, content: Any, status_code: int, description: Optional[str] = None, **others):
+    def from_api_route_params(
+        cls, content: Any, status_code: int, description: Optional[str] = None, **others
+    ):
         return cls(
             data=content,
             meta=ResponseMetadata(error=status_code >= 400, message=description)
@@ -67,18 +69,16 @@ class Item(BaseModel):
     name: str
 
 
-@app.get("/", response_model=Item, description="This is a route")
+@app.get("/items", response_model=List[Item], description="This is a route")
 def get_operation():
     return [Item(id=0, name="ciao"), Item(id=1, name="hola"), Item(id=1, name="hello")]
 ```
 
-Te result of `GET /`:
+Te result of `GET /items`:
 ```http
 HTTP/1.1 200 OK
 content-length: 131
 content-type: application/json
-date: Tue, 26 Jul 2022 22:25:43 GMT
-server: uvicorn
 
 {
     "data": [
@@ -102,4 +102,12 @@ server: uvicorn
 }
 ```
 
+
+## Contributing
+
+Contributions are very welcome!
+
+### How to contribute
+Just open an issue or submit a pull request on [GitHub](https://github.com/acwazz/fastapi-responseschema).
+While submitting a pull request describe what changes have been made.
 

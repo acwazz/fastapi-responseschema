@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Type, Union
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
