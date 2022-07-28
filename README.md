@@ -18,7 +18,6 @@ pip install fastapi-responseschema[pagination]
 
 ### Usage
 
-This is just a prelude:
 ```py
 from typing import Generic, TypeVar, Any, Optional, List
 from pydantic import BaseModel
