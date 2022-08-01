@@ -23,7 +23,15 @@ TPaginationMetadata = TypeVar("TPaginationMetadata", bound="PaginationMetadata")
 TPagedResponseSchema = TypeVar("TPagedResponseSchema", bound="AbstractPagedResponseSchema")
 
 
-class PaginationMetadata(BaseModel):  # pragma: no cover
+class PaginationMetadata(BaseModel):
+    """Pagination metadata model for pagination info.
+
+    Args:
+        total (int): Total number of items.
+        page_size (int): Number of items per page.
+        page (int): Page number.
+        links (dict): Object containing pagination links.
+    """
     total: conint(ge=0)
     page_size: conint(ge=0)
     page: conint(ge=1)
@@ -31,19 +39,34 @@ class PaginationMetadata(BaseModel):  # pragma: no cover
 
     @classmethod
     def from_abstract_page_create(cls, total: int, params: AbstractParams) -> TPaginationMetadata:
+        """Create pagination metadata from an abstract page.
+
+        Args:
+            total (int): Total number of items.
+            params (AbstractParams): A FastaAPI Pagination Params instance.
+
+        Returns:
+            TPaginationMetadata: PaginationMetadata instance
+        """
         return cls(
-        total=total,
-        page_size=params.page_size,
-        page=params.page,
-        links=create_links(
-            first={"page": 1},
-            last={"page": ceil(total / params.page_size) if total > 0 else 1},
-            next={"page": params.page + 1} if params.page * params.page_size < total else None,
-            prev={"page": params.page - 1} if 1 <= params.page - 1 else None,
+            total=total,
+            page_size=params.page_size,
+            page=params.page,
+            links=create_links(
+                first={"page": 1},
+                last={"page": ceil(total / params.page_size) if total > 0 else 1},
+                next={"page": params.page + 1} if params.page * params.page_size < total else None,
+                prev={"page": params.page - 1} if 1 <= params.page - 1 else None,
         ))
 
 
 class PaginationParams(BaseModel, AbstractParams):  # pragma: no cover
+    """Pagination Querystring parameters
+    
+    Args:
+        page (int): The page number.
+        page_size (int): Number of items per page.
+    """
     page: int = Query(1, ge=1, description="Page number")
     page_size: int = Query(50, ge=1, le=100, description="Page size")
 
@@ -54,6 +77,7 @@ class PaginationParams(BaseModel, AbstractParams):  # pragma: no cover
         )
 
 class AbstractPagedResponseSchema(AbstractPage[T], AbstractResponseSchema[T], Generic[T]):
+    """Abstract generic model for building response schema interfaces with pagination logic."""
     __inner_types__: ClassVar[Optional[Type]]
     __params_type__: ClassVar[Type[AbstractParams]] = PaginationParams
 
@@ -64,6 +88,26 @@ class AbstractPagedResponseSchema(AbstractPage[T], AbstractResponseSchema[T], Ge
 
 
 class PagedSchemaAPIRoute(SchemaAPIRoute):
+    """A SchemaAPIRoute class with pagination support.
+    Must be subclassed setting at least SchemaAPIRoute.response_model.
+
+    Usage:
+    
+        from typing import Generic, TypeVar
+        from fastapi_responseschema.integrations.pagination import AbstractPagedResponseSchema
+
+        T = TypeVar("T")
+        class MyResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
+            ...
+
+        class MyAPIRoute(SchemaPagedAPIRoute):
+            response_schema = MyResponseSchema
+            paged_response_schema = MyResponseSchema
+
+        from fastapi import APIRouter
+
+        router = APIRouter(route_class=MyAPIRoute)
+    """
     response_schema: Type[AbstractResponseSchema[Any]] = None
     error_response_schema: Optional[Type[AbstractResponseSchema[Any]]]
     paged_response_schema: Type[AbstractPagedResponseSchema[Any]]
@@ -80,11 +124,11 @@ class PagedSchemaAPIRoute(SchemaAPIRoute):
             if not self.error_response_schema:
                 return self.paged_response_schema
             return self.error_response_schema if is_error else self.paged_response_schema
-        return super().get_wrapper_model(is_error)
+        return super().get_wrapper_model(is_error, response_model)
 
     def override_response_model(self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
         if issubclass(response_model, AbstractPagedResponseSchema):
-            response_model = response_model.__inner_types__
+            return response_model
         return super().override_response_model(wrapper_model, response_model)
 
     def _wrap_endpoint_output(self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Any:

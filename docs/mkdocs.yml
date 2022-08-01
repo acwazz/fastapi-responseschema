@@ -37,10 +37,11 @@ nav:
       - Schemas: 'guide/schemas.md'
       - Routing: 'guide/routing.md'
       - Utilities: 'guide/utilities.md'
-      - Pagination Integration: 'guide/pagination_integration.md'
+      - Pagination Integration: 'guide/pagination-integration.md'
     - API: 
       - Interfaces: 'api/interfaces.md'
       - Exceptions: 'api/exceptions.md'
       - Routing: 'api/routing.md'
       - Helpers: 'api/helpers.md'
+      - Pagination Integration: 'api/pagination-integration.md'
     - Contibuting: 'contributing.md'
