@@ -35,9 +35,9 @@ nav:
     - Guide: 
       - Prelude: 'index.md'
       - Schemas: 'guide/schemas.md'
-      - Routing: 'guide/api_routes.md'
+      - Routing: 'guide/routing.md'
       - Utilities: 'guide/utilities.md'
-      - Pagination: 'guide/pagination_integration.md'
+      - Pagination Integration: 'guide/pagination_integration.md'
     - API: 
       - Interfaces: 'api/interfaces.md'
       - Exceptions: 'api/exceptions.md'

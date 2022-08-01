@@ -1,8 +1,9 @@
-from typing import Generic, TypeVar, Any, Optional, Type, get_args
+from typing import Generic, TypeVar, Any, Optional, Type, Sequence
 from pydantic import BaseModel
 from fastapi import FastAPI
-from fastapi_responseschema import AbstractResponseSchema, SchemaAPIRoute, wrap_app_responses
-from fastapi_pagination import paginate, Page, add_pagination
+from fastapi_responseschema import AbstractResponseSchema, wrap_app_responses
+from fastapi_responseschema.integrations.pagination import AbstractPagedResponseSchema, PaginationMetadata, PagedSchemaAPIRoute, PaginationParams
+from fastapi_pagination import paginate, add_pagination
 
 T = TypeVar("T")
 
@@ -11,6 +12,7 @@ T = TypeVar("T")
 class ResponseMetadata(BaseModel):
     error: bool
     message: Optional[str]
+    pagination: Optional[PaginationMetadata]
 
 
 class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
@@ -32,17 +34,40 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
 
-# Create an APIRoute
-class Route(SchemaAPIRoute):
-    response_schema = ResponseSchema
+class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
+    data: Any
+    meta: ResponseMetadata
 
-    def override_response_model(self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
-        print(response_model.__parameters__)
-        return super().override_response_model(wrapper_model, response_model)
-    
-    def _wrap_endpoint_output(self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Any:
-        print(endpoint_output)
-        return super()._wrap_endpoint_output(endpoint_output, wrapper_model, response_model, **params)
+    @classmethod
+    def create(
+            cls,
+            items: Sequence[T],
+            total: int,
+            params: PaginationParams,
+    ) -> 'PagedResponseSchema':
+        return cls(
+            data=items,
+            meta=ResponseMetadata(
+                error=False, 
+                pagination=PaginationMetadata.from_abstract_page_create(total=total, params=params)
+            )
+        )
+
+    @classmethod
+    def from_exception(cls, reason, status_code, message: str = "Error", **others):
+        return cls(
+            data=reason,
+            meta=ResponseMetadata(error=status_code >= 400, message=message)
+        )
+
+    @classmethod
+    def from_api_route_params(cls, content: Any, status_code: int, description: Optional[str] = None, **others):
+        return cls(error=status_code >= 400, data=content.data, meta=content.meta)
+
+# Create an APIRoute
+class Route(PagedSchemaAPIRoute):
+    response_schema = ResponseSchema
+    paged_response_schema = PagedResponseSchema
 
 # Setup you FastAPI app
 app = FastAPI(debug=True)
@@ -54,11 +79,12 @@ class Item(BaseModel):
     name: str
 
 
-@app.get("/", response_model=Page[Item], description="This is a route")
+@app.get("/", response_model=PagedResponseSchema[Item], description="This is a route")
 def get_operation():
     page = paginate([Item(id=0, name="ciao"), Item(id=1, name="hola"), Item(id=1, name="hello")])
     print(page)
     return page
 
 add_pagination(app)
+
 

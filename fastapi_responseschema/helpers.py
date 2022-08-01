@@ -22,7 +22,8 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
         FastAPI: The application instance
     """
     async def exception_handler(request: Request, exc: Union[RequestValidationError, StarletteHTTPException, BaseGenericHTTPException]) -> JSONResponse:
-        status_code = getattr(exc, 'status_code', None) if not isinstance(exc, RequestValidationError) else 422
+        print(exc)
+        status_code = getattr(exc, 'status_code') if not isinstance(exc, RequestValidationError) else 422
         return JSONResponse(
             content=error_response_schema.from_exception_handler(request=request, exception=exc).dict(),
             status_code=status_code,
@@ -45,7 +46,8 @@ def wrap_app_responses(app: FastAPI, route_class: SchemaAPIRoute) -> FastAPI:
         FastAPI: The application instance.
     """
     app.router.route_class = route_class
-    err_schema = getattr(route_class, "error_response_schema", route_class.response_schema)
-    if err_schema:
-        app = wrap_error_responses(app, error_response_schema=err_schema)
+    err_schema = getattr(route_class, "error_response_schema")
+    if err_schema is None:
+        err_schema = route_class.response_schema
+    app = wrap_error_responses(app, error_response_schema=err_schema)
     return app

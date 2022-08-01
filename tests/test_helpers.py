@@ -16,7 +16,6 @@ class Route(SchemaAPIRoute):
 app = FastAPI()
 wrap_app_responses(app, Route)
 
-
 client = TestClient(app)
 
 
@@ -68,3 +67,20 @@ def test_response_model_wrapping():
     assert r.get("data").get("name") == "hello"
     assert not r.get("error")
 
+class Route2(SchemaAPIRoute):
+    response_schema = SimpleResponseSchema
+
+app2 = FastAPI()
+wrap_app_responses(app2, Route2)
+
+client2 = TestClient(app2)
+
+@app2.get("/starlette-exception")
+def raise_starlette_exception():
+    raise StarletteHTTPException(400, "Error")
+
+def test_fallback_error_schema():
+    response = client2.get("/starlette-exception")
+    assert response.status_code == 400
+    assert response.json().get('data') == "Error"
+    assert response.json().get('error')

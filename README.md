@@ -108,5 +108,6 @@ Contributions are very welcome!
 
 ### How to contribute
 Just open an issue or submit a pull request on [GitHub](https://github.com/acwazz/fastapi-responseschema).
+
 While submitting a pull request describe what changes have been made.
 

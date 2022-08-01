@@ -1,4 +1,5 @@
 from __future__ import annotations
+from termios import ECHOE
 from typing import (
     Optional,
     Any,
@@ -123,7 +124,7 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
         """
         is_http_exception_family = isinstance(exception, (StarletteHTTPException, FastAPIHTTPException))
         params = {
-            "reason": exception.detail if is_http_exception_family else exception.errors(),
+            "reason": getattr(exception, "detail", str(exception)) if is_http_exception_family else exception.errors(),
             "status_code": exception.status_code if is_http_exception_family else 422,
             "headers": exception.headers if isinstance(exception, FastAPIHTTPException) else dict(),
         }

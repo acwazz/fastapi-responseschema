@@ -38,11 +38,11 @@ class SchemaAPIRoute(APIRoute):
 
         router = APIRouter(route_class=MyAPIRoute)
     """
-    response_schema: Type[AbstractResponseSchema[Any]] = None
+    response_schema: Type[AbstractResponseSchema[Any]]
     error_response_schema: Optional[Type[AbstractResponseSchema[Any]]] = None
 
     def __init_subclass__(cls, **kwargs):
-        if not hasattr(cls, 'response_schema') or getattr(cls, "response_schema") is None:
+        if not hasattr(cls, 'response_schema'):
             raise AttributeError("`response_schema` must be defined in subclass.")
         return super().__init_subclass__(**kwargs)
     
@@ -58,15 +58,16 @@ class SchemaAPIRoute(APIRoute):
         """
         return (status_code >= 400) if status_code else False
 
-    def get_wrapper_model(self, is_error: bool) -> Type[AbstractResponseSchema[Any]]:
+    def get_wrapper_model(self, is_error: bool, response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
         """Implements the ResponseSchema selection logic.
         This method gets called internally and should be overridden to gain control over the ResponseSchema selection logic.
 
         Args:
-            status_code (int): response status_code 
+            is_error (int): wheteher or not the operation returns an error.
+            response_model (Type[Any]): response_model set for APIRoute.
 
         Returns:
-            Type[AbstractResponseSchema[Any]]: The ResponseSchema to wrap the response_model
+            Type[AbstractResponseSchema[Any]]: The ResponseSchema to wrap the response_model.
         """
         if not self.error_response_schema:
             return self.response_schema
@@ -150,7 +151,7 @@ class SchemaAPIRoute(APIRoute):
         callbacks: Optional[List["APIRoute"]] = None
     ) -> None:
         if response_model:  # If a `response_model` is set, then wrap the `response_model` with a response schema
-            WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code))
+            WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code), response_model=response_model)
             endpoint_wrapper = self._create_endpoint_handler_decorator(
                 path=path,
                 wrapper_model=WrapperModel,

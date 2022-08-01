@@ -48,16 +48,16 @@ class TestSchemaAPIRouteOverridables:
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
         r = Route("/", lambda: False)
-        assert r.get_wrapper_model(is_error=False) == SimpleResponseSchema
-        assert r.get_wrapper_model(is_error=True) == SimpleResponseSchema
+        assert r.get_wrapper_model(is_error=False, response_model=dict) == SimpleResponseSchema
+        assert r.get_wrapper_model(is_error=True, response_model=dict) == SimpleResponseSchema
 
     def test_get_wrapper_model_with_error(self):
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
             error_response_schema = SimpleErrorResponseSchema
         r = Route("/", lambda: False)
-        assert r.get_wrapper_model(is_error=False) == SimpleResponseSchema
-        assert r.get_wrapper_model(is_error=True) == SimpleErrorResponseSchema
+        assert r.get_wrapper_model(is_error=False, response_model=dict) == SimpleResponseSchema
+        assert r.get_wrapper_model(is_error=True, response_model=dict) == SimpleErrorResponseSchema
     
     def test_override_response_model(self):
         class Route(SchemaAPIRoute):

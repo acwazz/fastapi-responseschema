@@ -42,7 +42,7 @@ def just_a_route():
     return {"message": "It Works!"}
 ```
 
-You can of course integrate the schema api route in `APIRouter`.
+You can even integrate the schema api route in `APIRouter`.
 
 ```py
 from pydantic import BaseModel

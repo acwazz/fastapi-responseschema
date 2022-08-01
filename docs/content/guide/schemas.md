@@ -3,7 +3,8 @@ hide:
   - footer
 ---
 Response schemas heavily rely on the concept of [pydantic GenericModel](https://pydantic-docs.helpmanual.io/usage/models/#generic-models).
-In this way we can wrap the returned response model of the fastapi operation.
+
+In this way `response_model` can be wrapped by the `ResponseSchema` in the fastapi operation.
 
 **`ResponseSchema` will wrap your response ONLY if you configured a `response_model` in your route operation.**
 
@@ -20,7 +21,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
 ```
 
 ## Constructors
-When creating a response schema constructors must be defined in subclass to ensure that the response model gets correctly created and set of additional metadata can be passed to the final wrapped response model.
+When creating a response schema, constructors must be defined in subclass to ensure that the final response model gets correctly created and additional metadata can be passed to the final response.
 
 ### `AbstractResponseSchema.from_exception`
 This constructor wraps the final response from an [exception handler](https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers).
@@ -62,4 +63,4 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 ```
 
-You can build multiple response schemas and compose them in `SchemaAPIRoute` subclasses.
+> Multiple response schemas can be built and composed in `SchemaAPIRoute` subclasses.
