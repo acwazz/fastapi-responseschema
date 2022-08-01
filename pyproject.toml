@@ -3,7 +3,11 @@ name = "fastapi-responseschema"
 version = "1.0.0"
 description = "Generic and common response schemas for FastAPI"
 authors = ["Emanuele Addis <ustarjem.acwazz@gmail.com>"]
-license = "MIT License"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/acwazz/fastapi-responseschema"
+homepage = "https://acwazz.github.io/fastapi-responseschema/"
+
 
 [tool.poetry.dependencies]
 python = "^3.8"
