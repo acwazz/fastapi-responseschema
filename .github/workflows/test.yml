@@ -26,7 +26,7 @@ jobs:
           poetry install -E pagination
       - name: Type checking
         run: |
-          pyre
+          poetry run pyre
       - name: Testing
         run: |
-          pytest
+          poetry run pytest
