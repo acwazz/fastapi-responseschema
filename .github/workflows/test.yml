@@ -1,0 +1,32 @@
+name: Run tests
+on:
+  pull_request:
+    types:
+      - "opened"
+      - "synchronize"
+  push:
+    branches:
+      - "master"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U poetry
+          poetry install -E pagination
+      - name: Type checking
+        run: |
+          pyre
+      - name: Testing
+        run: |
+          pytest
