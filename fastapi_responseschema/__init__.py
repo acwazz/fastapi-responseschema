@@ -3,7 +3,7 @@ from .routing import respond, SchemaAPIRoute
 from .helpers import wrap_app_responses, wrap_error_responses
 
 
-__version__ = '1.0.0'
+__version__ = '1.0.0a'
 
 
 __all__ = [
