@@ -1,0 +1,10 @@
+{
+  "site_package_search_strategy": "pep561",
+  "source_directories": [
+    {
+      "import_root": ".",
+      "source": "./fastapi_responseschema"
+    }
+  ],
+  "taint_models_path": "/home/acwazz/miniconda3/envs/fastapi-responseschema/lib/pyre_check/taint"
+}
