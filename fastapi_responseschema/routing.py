@@ -96,7 +96,6 @@ class SchemaAPIRoute(APIRoute):
         return wrapper_model[response_model].from_api_route_params(
             content=content,
             response_model=response_model,
-            status_code=params.get("status_code", 200)
             **params
         )
 
