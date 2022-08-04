@@ -92,9 +92,11 @@ class SchemaAPIRoute(APIRoute):
             content = endpoint_output.response_content
         else:
             content = endpoint_output
+        params['status_code'] = params.get('status_code') or 200
         return wrapper_model[response_model].from_api_route_params(
             content=content,
             response_model=response_model,
+            status_code=params.get("status_code", 200)
             **params
         )
 
@@ -151,7 +153,7 @@ class SchemaAPIRoute(APIRoute):
         callbacks: Optional[List["APIRoute"]] = None,
         **kwargs: Any
     ) -> None:
-        if response_model:  # If a `response_model` is set, then wrap the `response_model` with a response schema
+        if response_model and not issubclass(response_model, AbstractResponseSchema):  # If a `response_model` is set, then wrap the `response_model` with a response schema
             WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code), response_model=response_model)
             endpoint_wrapper = self._create_endpoint_handler_decorator(
                 path=path,
