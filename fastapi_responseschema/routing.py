@@ -148,7 +148,8 @@ class SchemaAPIRoute(APIRoute):
         include_in_schema: bool = True, 
         response_class: Optional[Type[Response]] = None, 
         dependency_overrides_provider: Optional[Any] = None, 
-        callbacks: Optional[List["APIRoute"]] = None
+        callbacks: Optional[List["APIRoute"]] = None,
+        **kwargs: Any
     ) -> None:
         if response_model:  # If a `response_model` is set, then wrap the `response_model` with a response schema
             WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code), response_model=response_model)
@@ -200,7 +201,8 @@ class SchemaAPIRoute(APIRoute):
             include_in_schema=include_in_schema,
             response_class=response_class,
             dependency_overrides_provider=dependency_overrides_provider,
-            callbacks=callbacks
+            callbacks=callbacks,
+            **kwargs
         )
 
 
