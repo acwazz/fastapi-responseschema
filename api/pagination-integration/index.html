@@ -618,14 +618,14 @@
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractPagedResponseSchema</span><span class="p">(</span><span class="n">AbstractPage</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
                                   <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/393cbc4d72fc647e211d2cef7a749f7e46928781/docs/../fastapi_responseschema/integrations/pagination.py#L79">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/1feb21aa39e6dcaf36e5f7cfecf566f897ac5a4a/docs/../fastapi_responseschema/integrations/pagination.py#L79">[view_source]</a></p>
 <p>Abstract generic model for building response schema interfaces with pagination logic.</p>
 <p><a id="fastapi_responseschema.integrations.pagination.PagedSchemaAPIRoute"></a></p>
 <p><a id="pydoc:fastapi_responseschema.integrations.pagination.PagedSchemaAPIRoute"></a></p>
 <h2 id="class-pagedschemaapiroute">Class PagedSchemaAPIRoute</h2>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PagedSchemaAPIRoute</span><span class="p">(</span><span class="n">SchemaAPIRoute</span><span class="p">)</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/393cbc4d72fc647e211d2cef7a749f7e46928781/docs/../fastapi_responseschema/integrations/pagination.py#L90">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/1feb21aa39e6dcaf36e5f7cfecf566f897ac5a4a/docs/../fastapi_responseschema/integrations/pagination.py#L90">[view_source]</a></p>
 <p>A SchemaAPIRoute class with pagination support.
 Must be subclassed setting at least SchemaAPIRoute.response_model.</p>
 <p>Usage:</p>
@@ -649,7 +649,7 @@ router = APIRouter(route_class=MyAPIRoute)
 <h2 id="class-paginationmetadata">Class PaginationMetadata</h2>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PaginationMetadata</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">)</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/393cbc4d72fc647e211d2cef7a749f7e46928781/docs/../fastapi_responseschema/integrations/pagination.py#L26">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/1feb21aa39e6dcaf36e5f7cfecf566f897ac5a4a/docs/../fastapi_responseschema/integrations/pagination.py#L26">[view_source]</a></p>
 <p>Pagination metadata model for pagination info.</p>
 <p><strong>Arguments</strong>:</p>
 <ul>
@@ -665,7 +665,7 @@ router = APIRouter(route_class=MyAPIRoute)
 <span class="k">def</span> <span class="nf">from_abstract_page_create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                               <span class="n">params</span><span class="p">:</span> <span class="n">AbstractParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TPaginationMetadata</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/393cbc4d72fc647e211d2cef7a749f7e46928781/docs/../fastapi_responseschema/integrations/pagination.py#L41">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/1feb21aa39e6dcaf36e5f7cfecf566f897ac5a4a/docs/../fastapi_responseschema/integrations/pagination.py#L41">[view_source]</a></p>
 <p>Create pagination metadata from an abstract page.</p>
 <p><strong>Arguments</strong>:</p>
 <ul>
@@ -681,7 +681,7 @@ router = APIRouter(route_class=MyAPIRoute)
 <h2 id="class-paginationparams">Class PaginationParams</h2>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PaginationParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">AbstractParams</span><span class="p">)</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/393cbc4d72fc647e211d2cef7a749f7e46928781/docs/../fastapi_responseschema/integrations/pagination.py#L63">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/1feb21aa39e6dcaf36e5f7cfecf566f897ac5a4a/docs/../fastapi_responseschema/integrations/pagination.py#L63">[view_source]</a></p>
 <p>Pagination Querystring parameters</p>
 <p><strong>Arguments</strong>:</p>
 <ul>
