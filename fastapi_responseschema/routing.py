@@ -1,5 +1,6 @@
 from __future__ import annotations
 import asyncio
+import inspect
 from typing import (
     Callable,
     Optional,
@@ -12,6 +13,7 @@ from typing import (
     Set
 )
 from functools import wraps
+import fastapi
 from fastapi import params, Response
 from fastapi.encoders import DictIntStrAny, SetIntStr
 from fastapi.routing import APIRoute
@@ -152,7 +154,15 @@ class SchemaAPIRoute(APIRoute):
         callbacks: Optional[List["APIRoute"]] = None,
         **kwargs: Any
     ) -> None:
-        if response_model and not issubclass(response_model, AbstractResponseSchema):  # If a `response_model` is set, then wrap the `response_model` with a response schema
+        try:
+            is_response_schema = issubclass(response_model, AbstractResponseSchema)
+        except TypeError:
+            if not inspect.isclass(response_model) and not response_model is None:
+                raise fastapi.exceptions.FastAPIError(
+                    f"Invalid args for response field! Hint: check that {response_model} is a valid pydantic field type"
+                )
+            is_response_schema = False
+        if response_model and not is_response_schema:  # If a `response_model` is set, then wrap the `response_model` with a response schema
             WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code), response_model=response_model)
             endpoint_wrapper = self._create_endpoint_handler_decorator(
                 path=path,
