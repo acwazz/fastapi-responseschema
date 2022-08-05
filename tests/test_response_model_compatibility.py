@@ -1,5 +1,4 @@
-import string
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi_responseschema import SchemaAPIRoute, wrap_app_responses
 from pydantic import BaseModel
