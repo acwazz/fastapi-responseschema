@@ -70,7 +70,7 @@ class Item(BaseModel):
 
 @app.get("/items", response_model=List[Item], description="This is a route")
 def get_operation():
-    return [Item(id=0, name="ciao"), Item(id=1, name="hola"), Item(id=1, name="hello")]
+    return [Item(id=1, name="ciao"), Item(id=2, name="hola"), Item(id=3, name="hello")]
 ```
 
 Te result of `GET /items`:
@@ -82,15 +82,15 @@ content-type: application/json
 {
     "data": [
         {
-            "id": 0,
+            "id": 1,
             "name": "ciao"
         },
         {
-            "id": 1,
+            "id": 2,
             "name": "hola"
         },
         {
-            "id": 1,
+            "id": 3,
             "name": "hello"
         }
     ],

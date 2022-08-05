@@ -1,6 +1,6 @@
 from typing import TypeVar, Generic, Any, Sequence
 import pytest
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.testclient import TestClient
 from fastapi_responseschema.integrations.pagination import (
     AbstractPagedResponseSchema, 
@@ -112,13 +112,29 @@ app.router.route_class = Route
 def with_response_model():
     return paginate([True, False, True, False])
 
+router = APIRouter(route_class=Route)
+
+@router.get("/with-router", response_model=SimplePagedResponseSchema[bool])
+def with_router():
+    return paginate([True, False, True, False])
+
+app.include_router(router)
+
 add_pagination(app)
 
 client = TestClient(app)
 
 
-def test_response_model_paginated_wrapping():
+def test_response_model_paginated_wrapping_in_app():
     raw = client.get("/with-model")
+    r = raw.json()
+    assert not r.get("data")[1]
+    assert r.get("pagination").get("total") == 4
+    assert not r.get("error")
+
+
+def test_response_model_paginated_wrapping_in_router():
+    raw = client.get("/with-router")
     r = raw.json()
     assert not r.get("data")[1]
     assert r.get("pagination").get("total") == 4

@@ -125,13 +125,3 @@ class PagedSchemaAPIRoute(SchemaAPIRoute):
                 return self.paged_response_schema
             return self.error_response_schema if is_error else self.paged_response_schema
         return super().get_wrapper_model(is_error, response_model)
-
-    def override_response_model(self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
-        if issubclass(response_model, AbstractPagedResponseSchema):
-            return response_model
-        return super().override_response_model(wrapper_model, response_model)
-
-    def _wrap_endpoint_output(self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Any:
-        if issubclass(response_model, AbstractPagedResponseSchema):
-            response_model = response_model.__inner_types__
-        return super()._wrap_endpoint_output(endpoint_output, wrapper_model, response_model, **params)
