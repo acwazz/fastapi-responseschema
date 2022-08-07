@@ -14,6 +14,7 @@ from typing import (
 )
 from functools import wraps
 import fastapi
+from fastapi.encoders import jsonable_encoder
 from fastapi import params, Response
 from fastapi.encoders import DictIntStrAny, SetIntStr
 from fastapi.routing import APIRoute
@@ -96,7 +97,15 @@ class SchemaAPIRoute(APIRoute):
             content = endpoint_output
         params['status_code'] = params.get('status_code') or 200
         return wrapper_model[response_model].from_api_route_params(
-            content=content,
+            content=jsonable_encoder(
+                obj=content,
+                include=params.get("response_model_include"),
+                exclude=params.get("response_model_exclude"),
+                by_alias=params.get("response_model_by_alias"),
+                exclude_unset=params.get("response_model_exclude_unset"),
+                exclude_defaults=params.get("response_model_exclude_defaults"),
+                exclude_none=params.get("response_model_exclude_none")
+            ),
             response_model=response_model,
             **params
         )

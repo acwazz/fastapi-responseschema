@@ -21,12 +21,12 @@ wrap_app_responses(app, Route)
 
 
 @app.get("/model-exclude", response_model=RModel, response_model_exclude={"name"})
-def wrapped_call_first():
+def filter_via_response_model_exclude():
     return {"id": 1, "name": "hiddenfield"}
 
 
 @app.get("/model-filters", response_model=RModel)
-def wrapped_call_first():
+def filter_via_response_model_schema():
     return {"id": 1, "name": "hiddenfield", "hidden": True}
 
 
@@ -41,7 +41,7 @@ def test_response_model_exclude_preserved():
     assert not resp.get("data").get("name")
 
 
-def test_response_model_filters():
+def test_inner_response_model_schema_not_overridden():
     r = client.get("/model-filters")
     resp = r.json()
     assert not resp.get("error")
