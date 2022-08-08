@@ -35,7 +35,7 @@ T = TypeVar("T")
 
 
 class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
-    data: Any
+    data: T
     meta: ResponseMetadata
 
     @classmethod

@@ -14,12 +14,12 @@ T = TypeVar("T")
 
 
 class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
-    data: Any
+    data: T
     error: bool
     code: str  # From a `result_code` field, not natively supported by constructors
 
     @classmethod
-    def from_exception(cls, reason, status_code, result_code: str = "Error", **others):
+    def from_exception(cls, reason: Any, status_code: int, result_code: str = "Error", **others):
         return cls(
             data=reason,
             error=status_code >= 400, 

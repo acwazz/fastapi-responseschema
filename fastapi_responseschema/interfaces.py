@@ -1,6 +1,5 @@
 from __future__ import annotations
-from termios import ECHOE
-from typing import Optional, Any, Type, List, Union, Set, TypeVar, Generic, NamedTuple
+from typing import Optional, Any, Type, List, Union, Set, TypeVar, Generic, NamedTuple, ClassVar, Tuple
 from abc import ABC, abstractmethod
 from fastapi import Request, Response
 from pydantic import BaseModel
@@ -16,6 +15,8 @@ TResponseSchema = TypeVar("TResponseSchema", bound="AbstractResponseSchema")
 
 class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     """Abstract generic model for building response schema interfaces."""
+
+    __inner_types__: ClassVar[Optional[Type]] = None
 
     @classmethod
     @abstractmethod
@@ -118,6 +119,12 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
         }
         params.update(exception.extra_params if isinstance(exception, BaseGenericHTTPException) else dict())
         return cls.from_exception(request=request, **params)
+
+    def __class_getitem__(
+        cls: Type[TResponseSchema], params: Union[Type[Any], Tuple[Type[Any], ...]]
+    ) -> Type[TResponseSchema]:
+        cls.__inner_types__ = params
+        return super().__class_getitem__(params)
 
     class Config:
         arbitrary_types_allowed = True

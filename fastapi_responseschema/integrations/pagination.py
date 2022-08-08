@@ -1,5 +1,5 @@
 from math import ceil
-from typing import Generic, TypeVar, Type, Any, Optional, Union, Tuple, ClassVar
+from typing import Generic, TypeVar, Type, Any, Optional, ClassVar
 from fastapi import Query
 from fastapi_pagination.bases import AbstractPage, AbstractParams, RawParams
 from fastapi_pagination.links.bases import Links, create_links
@@ -74,14 +74,7 @@ class PaginationParams(BaseModel, AbstractParams):  # pragma: no cover
 class AbstractPagedResponseSchema(AbstractPage[T], AbstractResponseSchema[T], Generic[T]):
     """Abstract generic model for building response schema interfaces with pagination logic."""
 
-    __inner_types__: ClassVar[Optional[Type]]
     __params_type__: ClassVar[Type[AbstractParams]] = PaginationParams
-
-    def __class_getitem__(
-        cls: Type[TPagedResponseSchema], params: Union[Type[Any], Tuple[Type[Any], ...]]
-    ) -> Type[TPagedResponseSchema]:
-        cls.__inner_types__ = params
-        return super().__class_getitem__(params)
 
 
 class PagedSchemaAPIRoute(SchemaAPIRoute):

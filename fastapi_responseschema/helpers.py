@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Type, Union
+from typing import Any, Type, Union
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -24,10 +24,9 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
     async def exception_handler(
         request: Request, exc: Union[RequestValidationError, StarletteHTTPException, BaseGenericHTTPException]
     ) -> JSONResponse:
-        print(exc)
         status_code = getattr(exc, "status_code") if not isinstance(exc, RequestValidationError) else 422
         return JSONResponse(
-            content=error_response_schema.from_exception_handler(request=request, exception=exc).dict(),
+            content=error_response_schema[Any].from_exception_handler(request=request, exception=exc).dict(),
             status_code=status_code,
             headers=getattr(exc, "headers", None),
         )

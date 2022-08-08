@@ -12,7 +12,7 @@ class AResponseModel(BaseModel):
 
 
 class SimpleResponseSchema(AbstractResponseSchema[T], Generic[T]):
-    data: Any
+    data: T
     error: bool
 
     @classmethod
@@ -35,6 +35,3 @@ class SimpleErrorResponseSchema(AbstractResponseSchema[T], Generic[T]):
     @classmethod
     def from_api_route_params(cls, content: Any, status_code: int, **others):
         return cls(reason=content, error=status_code >= 400)
-
-
-SimpleWrappedResponseModel = SimpleResponseSchema[AResponseModel]

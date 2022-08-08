@@ -40,7 +40,7 @@ T = TypeVar("T")
 
 
 class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
-    data: Any
+    data: T
     error: bool
     message: str
 

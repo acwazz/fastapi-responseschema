@@ -37,7 +37,7 @@ def test_response_model_exclude_preserved():
     r = client.get("/model-exclude")
     resp = r.json()
     assert not resp.get("error")
-    assert resp.get("data").get("id") == 1
+    assert resp.get("data").get("id") == "1"
     assert not resp.get("data").get("name")
 
 
@@ -45,6 +45,6 @@ def test_inner_response_model_schema_not_overridden():
     r = client.get("/model-filters")
     resp = r.json()
     assert not resp.get("error")
-    assert resp.get("data").get("id") == 1
+    assert resp.get("data").get("id") == "1"
     assert resp.get("data").get("name")
     assert not resp.get("data").get("hidden")

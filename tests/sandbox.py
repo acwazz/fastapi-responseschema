@@ -79,7 +79,6 @@ class Item(BaseModel):
 @app.get("/", response_model=PagedResponseSchema[Item], description="This is a route")
 def get_operation():
     page = paginate([Item(id=0, name="ciao"), Item(id=1, name="hola"), Item(id=1, name="hello")])
-    print(page)
     return page
 
 

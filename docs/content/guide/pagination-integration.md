@@ -23,8 +23,10 @@ class ResponseMetadata(BaseModel):
     message: Optional[str]
     pagination: Optional[PaginationMetadata]
 
+T = TypeVar("T")
+
 class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
-    data: Any
+    data: Sequence[T]
     meta: ResponseMetadata
 
     @classmethod
