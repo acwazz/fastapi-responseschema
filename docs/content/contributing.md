@@ -1,7 +1,7 @@
 @cat ../../README.md :with slice_lines = "108:"
 
 ## Guidelines
-- Try to adhere as much as possibleto the Python style and language conventions.
+- Try to adhere as much as possible to the Python style and language conventions.
 - Add unit tests for classes and methods. 
 - When writing features exposed in API, always add documentation following the Google Style Python docstrings.
 

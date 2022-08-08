@@ -27,19 +27,22 @@ def test_respond_returns_metadata():
 class TestSchemaAPIRouteOverridables:
     def test_wrong_subsclassing(self):
         with pytest.raises(AttributeError):
+
             class Route(SchemaAPIRoute):
                 pass
-    
+
     def test_is_api_route(self):
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
+
         r = Route("/", lambda: True)
         assert isinstance(r, APIRoute)
         assert issubclass(Route, APIRoute)
-    
+
     def test_is_error_state(self):
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
+
         r = Route("/", lambda: False)
         assert r.is_error_state(status_code=405)
         assert not r.is_error_state(status_code=301)
@@ -47,6 +50,7 @@ class TestSchemaAPIRouteOverridables:
     def test_get_wrapper_model(self):
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
+
         r = Route("/", lambda: False)
         assert r.get_wrapper_model(is_error=False, response_model=dict) == SimpleResponseSchema
         assert r.get_wrapper_model(is_error=True, response_model=dict) == SimpleResponseSchema
@@ -55,15 +59,20 @@ class TestSchemaAPIRouteOverridables:
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
             error_response_schema = SimpleErrorResponseSchema
+
         r = Route("/", lambda: False)
         assert r.get_wrapper_model(is_error=False, response_model=dict) == SimpleResponseSchema
         assert r.get_wrapper_model(is_error=True, response_model=dict) == SimpleErrorResponseSchema
-    
+
     def test_override_response_model(self):
         class Route(SchemaAPIRoute):
             response_schema = SimpleResponseSchema
+
         r = Route("/", lambda: False)
-        assert r.override_response_model(wrapper_model=r.response_schema, response_model=AResponseModel) == SimpleResponseSchema[AResponseModel]
+        assert (
+            r.override_response_model(wrapper_model=r.response_schema, response_model=AResponseModel)
+            == SimpleResponseSchema[AResponseModel]
+        )
 
 
 class SimpleRoute(SchemaAPIRoute):
@@ -79,17 +88,21 @@ app.router.route_class = SimpleRoute
 def simple_route():
     return {"op": True}
 
+
 @app.get("/with-model", response_model=AResponseModel)
 def with_response_model():
     return {"id": 1, "name": "hello"}
+
 
 @app.get("/as-error", response_model=AResponseModel, status_code=404)
 def as_error():
     return {"id": 0, "name": ""}
 
+
 @app.get("/respond", response_model=AResponseModel)
 def responder():
     return respond({"id": 1, "name": "hello"})
+
 
 @app.get("/async", response_model=AResponseModel)
 async def async_route():
@@ -98,6 +111,7 @@ async def async_route():
 
 
 client = TestClient(app)
+
 
 def test_legacy_behaviour():
     raw = client.get("/")

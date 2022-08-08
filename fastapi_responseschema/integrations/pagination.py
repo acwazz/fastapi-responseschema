@@ -1,14 +1,5 @@
 from math import ceil
-from typing import (
-    Generic, 
-    TypeVar, 
-    Type, 
-    Any, 
-    Optional,
-    Union,
-    Tuple,
-    ClassVar
-)
+from typing import Generic, TypeVar, Type, Any, Optional, Union, Tuple, ClassVar
 from fastapi import Query
 from fastapi_pagination.bases import AbstractPage, AbstractParams, RawParams
 from fastapi_pagination.links.bases import Links, create_links
@@ -32,6 +23,7 @@ class PaginationMetadata(BaseModel):
         page (int): Page number.
         links (dict): Object containing pagination links.
     """
+
     total: conint(ge=0)
     page_size: conint(ge=0)
     page: conint(ge=1)
@@ -57,16 +49,18 @@ class PaginationMetadata(BaseModel):
                 last={"page": ceil(total / params.page_size) if total > 0 else 1},
                 next={"page": params.page + 1} if params.page * params.page_size < total else None,
                 prev={"page": params.page - 1} if 1 <= params.page - 1 else None,
-        ))
+            ),
+        )
 
 
 class PaginationParams(BaseModel, AbstractParams):  # pragma: no cover
     """Pagination Querystring parameters
-    
+
     Args:
         page (int): The page number.
         page_size (int): Number of items per page.
     """
+
     page: int = Query(1, ge=1, description="Page number")
     page_size: int = Query(50, ge=1, le=100, description="Page size")
 
@@ -76,15 +70,18 @@ class PaginationParams(BaseModel, AbstractParams):  # pragma: no cover
             offset=self.page_size * (self.page - 1),
         )
 
+
 class AbstractPagedResponseSchema(AbstractPage[T], AbstractResponseSchema[T], Generic[T]):
     """Abstract generic model for building response schema interfaces with pagination logic."""
+
     __inner_types__: ClassVar[Optional[Type]]
     __params_type__: ClassVar[Type[AbstractParams]] = PaginationParams
 
-    def __class_getitem__(cls: Type[TPagedResponseSchema], params: Union[Type[Any], Tuple[Type[Any], ...]]) -> Type[TPagedResponseSchema]:
+    def __class_getitem__(
+        cls: Type[TPagedResponseSchema], params: Union[Type[Any], Tuple[Type[Any], ...]]
+    ) -> Type[TPagedResponseSchema]:
         cls.__inner_types__ = params
         return super().__class_getitem__(params)
-
 
 
 class PagedSchemaAPIRoute(SchemaAPIRoute):
@@ -92,7 +89,7 @@ class PagedSchemaAPIRoute(SchemaAPIRoute):
     Must be subclassed setting at least SchemaAPIRoute.response_model.
 
     Usage:
-    
+
         from typing import Generic, TypeVar
         from fastapi_responseschema.integrations.pagination import AbstractPagedResponseSchema
 
@@ -108,17 +105,18 @@ class PagedSchemaAPIRoute(SchemaAPIRoute):
 
         router = APIRouter(route_class=MyAPIRoute)
     """
+
     response_schema: Type[AbstractResponseSchema[Any]] = None
     error_response_schema: Optional[Type[AbstractResponseSchema[Any]]]
     paged_response_schema: Type[AbstractPagedResponseSchema[Any]]
 
     def __init_subclass__(cls, **kwargs):
-        if not hasattr(cls, 'paged_response_schema') or getattr(cls, "paged_response_schema") is None:
+        if not hasattr(cls, "paged_response_schema") or getattr(cls, "paged_response_schema") is None:
             raise AttributeError("`paged_response_schema` must be defined in subclass.")
         if getattr(cls, "response_schema") is None:
             raise AttributeError("`response_schema` must be defined in subclass.")
         return super().__init_subclass__(**kwargs)
-    
+
     def get_wrapper_model(self, is_error: bool, response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
         if issubclass(response_model, AbstractPagedResponseSchema):
             if not self.error_response_schema:

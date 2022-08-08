@@ -1,22 +1,10 @@
 from __future__ import annotations
 import asyncio
 import inspect
-from typing import (
-    Callable,
-    Optional,
-    Any,
-    Type,
-    List,
-    Sequence,
-    Dict,
-    Union,
-    Set
-)
+from typing import Callable, Optional, Any, Type, List, Sequence, Dict, Union, Set
 from functools import wraps
-import fastapi
-from fastapi.encoders import jsonable_encoder
-from fastapi import params, Response
-from fastapi.encoders import DictIntStrAny, SetIntStr
+from fastapi import params, Response, exceptions
+from fastapi.encoders import DictIntStrAny, SetIntStr, jsonable_encoder
 from fastapi.routing import APIRoute
 from .interfaces import AbstractResponseSchema, ResponseWithMetadata
 
@@ -26,7 +14,7 @@ class SchemaAPIRoute(APIRoute):
     Must be subclassed setting at least SchemaAPIRoute.response_model.
 
     Usage:
-    
+
         from typing import Generic, TypeVar
         from fastapi_responseschema.interfaces import AbstractResponseSchema
 
@@ -41,14 +29,15 @@ class SchemaAPIRoute(APIRoute):
 
         router = APIRouter(route_class=MyAPIRoute)
     """
+
     response_schema: Type[AbstractResponseSchema[Any]]
     error_response_schema: Optional[Type[AbstractResponseSchema[Any]]] = None
 
     def __init_subclass__(cls, **kwargs):
-        if not hasattr(cls, 'response_schema'):
+        if not hasattr(cls, "response_schema"):
             raise AttributeError("`response_schema` must be defined in subclass.")
         return super().__init_subclass__(**kwargs)
-    
+
     def is_error_state(self, status_code: Optional[int] = None) -> bool:
         """Handles the error_state for the operation evaluating the status_code.
         This method gets called internally and should be overridden to modify the error state of the operation.
@@ -75,8 +64,10 @@ class SchemaAPIRoute(APIRoute):
         if not self.error_response_schema:
             return self.response_schema
         return self.error_response_schema if is_error else self.response_schema
-    
-    def override_response_model(self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
+
+    def override_response_model(
+        self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]
+    ) -> Type[AbstractResponseSchema[Any]]:
         """Wraps the given response_model with the ResponseSchema.
         This method gets called internally and should be overridden to gain control over the response_model wrapping logic.
 
@@ -89,13 +80,15 @@ class SchemaAPIRoute(APIRoute):
         """
         return wrapper_model[response_model]
 
-    def _wrap_endpoint_output(self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Any:
+    def _wrap_endpoint_output(
+        self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params
+    ) -> Any:
         if isinstance(endpoint_output, ResponseWithMetadata):  # Handling the `respond` function
             params.update(endpoint_output.metadata)
             content = endpoint_output.response_content
         else:
             content = endpoint_output
-        params['status_code'] = params.get('status_code') or 200
+        params["status_code"] = params.get("status_code") or 200
         return wrapper_model[response_model].from_api_route_params(
             content=jsonable_encoder(
                 obj=content,
@@ -104,15 +97,18 @@ class SchemaAPIRoute(APIRoute):
                 by_alias=params.get("response_model_by_alias"),
                 exclude_unset=params.get("response_model_exclude_unset"),
                 exclude_defaults=params.get("response_model_exclude_defaults"),
-                exclude_none=params.get("response_model_exclude_none")
+                exclude_none=params.get("response_model_exclude_none"),
             ),
             response_model=response_model,
-            **params
+            **params,
         )
 
-    def _create_endpoint_handler_decorator(self, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params) -> Callable:
+    def _create_endpoint_handler_decorator(
+        self, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params
+    ) -> Callable:
         def decorator(func):
             if asyncio.iscoroutinefunction(func):  # Not blocking asncyio loop
+
                 @wraps(func)
                 async def wrapper(*args, **kwargs):
                     endpoint_output = await func(*args, **kwargs)
@@ -120,9 +116,11 @@ class SchemaAPIRoute(APIRoute):
                         endpoint_output=endpoint_output,
                         wrapper_model=wrapper_model,
                         response_model=response_model,
-                        **params
+                        **params,
                     )
+
             else:
+
                 @wraps(func)
                 def wrapper(*args, **kwargs):
                     endpoint_output = func(*args, **kwargs)
@@ -130,49 +128,56 @@ class SchemaAPIRoute(APIRoute):
                         endpoint_output=endpoint_output,
                         response_model=response_model,
                         wrapper_model=wrapper_model,
-                        **params
+                        **params,
                     )
+
             return wrapper
+
         return decorator
 
     def __init__(
-        self, 
-        path: str, 
-        endpoint: Callable, 
-        *, 
-        response_model: Optional[Type[Any]] = None, 
-        status_code: int = 200, 
-        tags: Optional[List[str]] = None, 
-        dependencies: Optional[Sequence[params.Depends]] = None, 
-        summary: Optional[str] = None, description: Optional[str] = None, 
-        response_description: str = "Successful Response", 
-        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None, 
-        deprecated: Optional[bool] = None, 
-        name: Optional[str] = None, 
-        methods: Optional[Union[Set[str], List[str]]] = None, 
-        operation_id: Optional[str] = None, 
-        response_model_include: Optional[Union[SetIntStr, DictIntStrAny]] = None, 
-        response_model_exclude: Optional[Union[SetIntStr, DictIntStrAny]] = None, 
-        response_model_by_alias: bool = True, 
-        response_model_exclude_unset: bool = False, 
-        response_model_exclude_defaults: bool = False, 
-        response_model_exclude_none: bool = False, 
-        include_in_schema: bool = True, 
-        response_class: Optional[Type[Response]] = None, 
-        dependency_overrides_provider: Optional[Any] = None, 
+        self,
+        path: str,
+        endpoint: Callable,
+        *,
+        response_model: Optional[Type[Any]] = None,
+        status_code: int = 200,
+        tags: Optional[List[str]] = None,
+        dependencies: Optional[Sequence[params.Depends]] = None,
+        summary: Optional[str] = None,
+        description: Optional[str] = None,
+        response_description: str = "Successful Response",
+        responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = None,
+        deprecated: Optional[bool] = None,
+        name: Optional[str] = None,
+        methods: Optional[Union[Set[str], List[str]]] = None,
+        operation_id: Optional[str] = None,
+        response_model_include: Optional[Union[SetIntStr, DictIntStrAny]] = None,
+        response_model_exclude: Optional[Union[SetIntStr, DictIntStrAny]] = None,
+        response_model_by_alias: bool = True,
+        response_model_exclude_unset: bool = False,
+        response_model_exclude_defaults: bool = False,
+        response_model_exclude_none: bool = False,
+        include_in_schema: bool = True,
+        response_class: Optional[Type[Response]] = None,
+        dependency_overrides_provider: Optional[Any] = None,
         callbacks: Optional[List["APIRoute"]] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         try:
             is_response_schema = issubclass(response_model, AbstractResponseSchema)
         except TypeError:
             if not inspect.isclass(response_model) and not response_model is None:
-                raise fastapi.exceptions.FastAPIError(
+                raise exceptions.FastAPIError(
                     f"Invalid args for response field! Hint: check that {response_model} is a valid pydantic field type"
                 )
             is_response_schema = False
-        if response_model and not is_response_schema:  # If a `response_model` is set, then wrap the `response_model` with a response schema
-            WrapperModel = self.get_wrapper_model(is_error=self.is_error_state(status_code=status_code), response_model=response_model)
+        if (
+            response_model and not is_response_schema
+        ):  # If a `response_model` is set, then wrap the `response_model` with a response schema
+            WrapperModel = self.get_wrapper_model(
+                is_error=self.is_error_state(status_code=status_code), response_model=response_model
+            )
             endpoint_wrapper = self._create_endpoint_handler_decorator(
                 path=path,
                 wrapper_model=WrapperModel,
@@ -193,13 +198,13 @@ class SchemaAPIRoute(APIRoute):
                 response_model_exclude_defaults=response_model_exclude_defaults,
                 response_model_exclude_none=response_model_exclude_none,
                 include_in_schema=include_in_schema,
-                response_class=response_class
+                response_class=response_class,
             )
             endpoint = endpoint_wrapper(endpoint)
             response_model = self.override_response_model(wrapper_model=WrapperModel, response_model=response_model)
         super().__init__(
-            path, 
-            endpoint, 
+            path,
+            endpoint,
             response_model=response_model,
             status_code=status_code,
             tags=tags,
@@ -222,7 +227,7 @@ class SchemaAPIRoute(APIRoute):
             response_class=response_class,
             dependency_overrides_provider=dependency_overrides_provider,
             callbacks=callbacks,
-            **kwargs
+            **kwargs,
         )
 
 

@@ -10,7 +10,6 @@ from .exceptions import BaseGenericHTTPException
 from .interfaces import AbstractResponseSchema
 
 
-
 def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractResponseSchema]) -> FastAPI:
     """Wraps all exception handlers with the provided response schema.
 
@@ -21,14 +20,18 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
     Returns:
         FastAPI: The application instance
     """
-    async def exception_handler(request: Request, exc: Union[RequestValidationError, StarletteHTTPException, BaseGenericHTTPException]) -> JSONResponse:
+
+    async def exception_handler(
+        request: Request, exc: Union[RequestValidationError, StarletteHTTPException, BaseGenericHTTPException]
+    ) -> JSONResponse:
         print(exc)
-        status_code = getattr(exc, 'status_code') if not isinstance(exc, RequestValidationError) else 422
+        status_code = getattr(exc, "status_code") if not isinstance(exc, RequestValidationError) else 422
         return JSONResponse(
             content=error_response_schema.from_exception_handler(request=request, exception=exc).dict(),
             status_code=status_code,
-            headers=getattr(exc, "headers", None)
+            headers=getattr(exc, "headers", None),
         )
+
     app.add_exception_handler(RequestValidationError, exception_handler)
     app.add_exception_handler(StarletteHTTPException, exception_handler)
     app.add_exception_handler(BaseGenericHTTPException, exception_handler)

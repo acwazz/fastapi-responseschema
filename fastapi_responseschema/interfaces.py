@@ -1,16 +1,6 @@
 from __future__ import annotations
 from termios import ECHOE
-from typing import (
-    Optional,
-    Any,
-    Type,
-    List,
-    Union,
-    Set,
-    TypeVar,
-    Generic,
-    NamedTuple
-)
+from typing import Optional, Any, Type, List, Union, Set, TypeVar, Generic, NamedTuple
 from abc import ABC, abstractmethod
 from fastapi import Request, Response
 from pydantic import BaseModel
@@ -21,36 +11,37 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .exceptions import BaseGenericHTTPException
 
 T = TypeVar("T")
-TResponseSchema= TypeVar("TResponseSchema", bound="AbstractResponseSchema")
+TResponseSchema = TypeVar("TResponseSchema", bound="AbstractResponseSchema")
 
 
 class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     """Abstract generic model for building response schema interfaces."""
+
     @classmethod
     @abstractmethod
     def from_api_route_params(
         cls: Type[TResponseSchema],
         content: Any,
-        path: str, 
+        path: str,
         status_code: int,
-        response_model:Optional[Type[BaseModel]] = None,
+        response_model: Optional[Type[BaseModel]] = None,
         tags: Optional[List[str]] = None,
-        summary: Optional[str] = None, 
-        description: Optional[str] = None, 
-        response_description: str = "Successful Response", 
-        deprecated: Optional[bool] = None, 
-        name: Optional[str] = None, 
-        methods: Optional[Union[Set[str], List[str]]] = None, 
-        operation_id: Optional[str] = None, 
-        response_model_include: Optional[Union[SetIntStr, DictIntStrAny]] = None, 
-        response_model_exclude: Optional[Union[SetIntStr, DictIntStrAny]] = None, 
-        response_model_by_alias: bool = True, 
-        response_model_exclude_unset: bool = False, 
-        response_model_exclude_defaults: bool = False, 
-        response_model_exclude_none: bool = False, 
-        include_in_schema: bool = True, 
+        summary: Optional[str] = None,
+        description: Optional[str] = None,
+        response_description: str = "Successful Response",
+        deprecated: Optional[bool] = None,
+        name: Optional[str] = None,
+        methods: Optional[Union[Set[str], List[str]]] = None,
+        operation_id: Optional[str] = None,
+        response_model_include: Optional[Union[SetIntStr, DictIntStrAny]] = None,
+        response_model_exclude: Optional[Union[SetIntStr, DictIntStrAny]] = None,
+        response_model_by_alias: bool = True,
+        response_model_exclude_unset: bool = False,
+        response_model_exclude_defaults: bool = False,
+        response_model_exclude_none: bool = False,
+        include_in_schema: bool = True,
         response_class: Optional[Type[Response]] = None,
-        **extra_params: Any
+        **extra_params: Any,
     ) -> TResponseSchema:  # pragma: no cover
         """Builds an instance of response model from an API Route constructor.
         This method must be overridden by subclasses.
@@ -85,13 +76,8 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     @classmethod
     @abstractmethod
     def from_exception(
-        cls: Type[TResponseSchema], 
-        request: Request, 
-        reason: str, 
-        status_code: int, 
-        headers: dict, 
-        **extra_params: Any
-    ) -> TResponseSchema: # pragma: no cover
+        cls: Type[TResponseSchema], request: Request, reason: str, status_code: int, headers: dict, **extra_params: Any
+    ) -> TResponseSchema:  # pragma: no cover
         """Builds a ResponseSchema instance from an exception.
         This method must be overridden by subclasses.
 
@@ -108,10 +94,12 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
 
     @classmethod
     def from_exception_handler(
-        cls: Type[TResponseSchema], 
-        request: Request, 
-        exception: Union[RequestValidationError, StarletteHTTPException, FastAPIHTTPException, BaseGenericHTTPException]
-    ) -> TResponseSchema:  
+        cls: Type[TResponseSchema],
+        request: Request,
+        exception: Union[
+            RequestValidationError, StarletteHTTPException, FastAPIHTTPException, BaseGenericHTTPException
+        ],
+    ) -> TResponseSchema:
         """Used in excpetion handlers to build a ResponseSchema instance.
         This method should not be overridden by subclasses.
 
@@ -130,18 +118,19 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
         }
         params.update(exception.extra_params if isinstance(exception, BaseGenericHTTPException) else dict())
         return cls.from_exception(request=request, **params)
-    
+
     class Config:
         arbitrary_types_allowed = True
 
 
 class ResponseWithMetadata(NamedTuple):
     """This Interface wraps the response content with the additional metadata
-    
+
     Args:
         metadata (dict): A dictionary containing the metadata fields.
         response_content (Optional[Any]): The content of the response. Default to None.
-    
+
     """
+
     metadata: dict
     response_content: Optional[Any] = None

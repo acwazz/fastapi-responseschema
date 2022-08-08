@@ -26,6 +26,7 @@ ipython = "^8.4.0"
 mkdocs = "^1.3.1"
 mkdocs-material = "^8.3.9"
 pyre-check = "^0.9.15"
+black = "^22.6.0"
 
 [tool.poetry.extras]
 pagination = ["fastapi-pagination"]
@@ -51,4 +52,30 @@ search_path = [ "fastapi_responseschema" ]
 
 [tool.pydoc-markdown.renderer]
 type = "mkdocs"
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+include = '\.pyi?$'
+# 'extend-exclude' excludes files or directories in addition to the defaults
+extend-exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+  | stubs
+  | \.pyre
+  | \.github
+  | \.pyre_configuration
+  | \.gitignore
+  | \.coverage
+)/
+'''
 

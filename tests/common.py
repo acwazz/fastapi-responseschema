@@ -17,17 +17,12 @@ class SimpleResponseSchema(AbstractResponseSchema[T], Generic[T]):
 
     @classmethod
     def from_exception(cls, reason, status_code, **others):
-        return cls(
-            data=reason,
-            error=status_code >= 400
-        )
+        return cls(data=reason, error=status_code >= 400)
 
     @classmethod
     def from_api_route_params(cls, content: Any, status_code: int, **others):
-        return cls(
-            data=content,
-            error=status_code >= 400
-        )
+        return cls(data=content, error=status_code >= 400)
+
 
 class SimpleErrorResponseSchema(AbstractResponseSchema[T], Generic[T]):
     reason: Any
@@ -35,17 +30,11 @@ class SimpleErrorResponseSchema(AbstractResponseSchema[T], Generic[T]):
 
     @classmethod
     def from_exception(cls, reason, status_code, **others):
-        return cls(
-            reason=reason,
-            error=status_code >= 400
-        )
+        return cls(reason=reason, error=status_code >= 400)
 
     @classmethod
     def from_api_route_params(cls, content: Any, status_code: int, **others):
-        return cls(
-            reason=content,
-            error=status_code >= 400
-        )
+        return cls(reason=content, error=status_code >= 400)
 
 
 SimpleWrappedResponseModel = SimpleResponseSchema[AResponseModel]

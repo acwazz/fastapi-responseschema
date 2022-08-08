@@ -26,6 +26,7 @@ jobs:
           poetry install -E pagination
       - name: Type checking
         run: |
+          apt-get install -y watchman
           poetry run pyre
       - name: Testing
         run: |
