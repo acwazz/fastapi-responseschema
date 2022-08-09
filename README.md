@@ -1,4 +1,5 @@
 # ☄️ FastAPI Response Schema
+[![PyPI](https://img.shields.io/pypi/v/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![PyPI - Downloads](https://img.shields.io/pypi/dd/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![Commits](https://img.shields.io/github/last-commit/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/commit/master) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/releases) 
 
 ## Overview
 This package extends the [FastAPI](https://fastapi.tiangolo.com/) response model schema allowing you to have a common response wrapper via a `fastapi.routing.APIRoute`.
