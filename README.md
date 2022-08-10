@@ -1,7 +1,14 @@
 # ☄️ FastAPI Response Schema
 
+> FastAPI Response Schema is still **experimental and in active development**. 
+> 
+> Consider *Alpha* and *Beta* stages for `1.x.x` versions.
+> Stable API and functionality will be released from version `2.0.0`.
+
 ## Overview
 This package extends the [FastAPI](https://fastapi.tiangolo.com/) response model schema allowing you to have a common response wrapper via a `fastapi.routing.APIRoute`.
+
+This library supports python versions **>=3.8**.
 
 
 ## Getting started

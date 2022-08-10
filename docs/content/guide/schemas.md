@@ -45,7 +45,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
     message: str
 
     @classmethod
-    def from_exception(cls, reason, status_code, message: str = "Error", **others):  # from an exception handler 
+    def from_exception(cls, reason: T, status_code: int, message: str = "Error", **others):  # from an exception handler 
         return cls(
             data=reason,
             error=status_code >= 400, 
@@ -54,7 +54,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
 
     @classmethod
     def from_api_route_params(
-        cls, content: Any, status_code: int, description: Optional[str] = None, **others
+        cls, content: T, status_code: int, description: Optional[str] = None, **others
     ):  # from an api route
         return cls(
             data=content,

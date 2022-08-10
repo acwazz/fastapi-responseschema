@@ -14,7 +14,7 @@ A `PagedResponseSchema` is a generic that inherits from `fastapi_pagination.base
 You can use this type of classes to handle pagination with a global response schema logic.
 
 ```py
-from typing import Sequence, TypeVar, Any, Generic
+from typing import Sequence, TypeVar, Any, Generic, Union
 from fastapi_responseschema.integrations.pagination import AbstractPagedResponseSchema, PaginationMetadata, PagedSchemaAPIRoute, PaginationParams
 
 
@@ -26,7 +26,7 @@ class ResponseMetadata(BaseModel):
 T = TypeVar("T")
 
 class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
-    data: Sequence[T]
+    data: Union[Sequence[T], T]  # In case of error response we will pass a scalar type, a string or a dict
     meta: ResponseMetadata
 
     @classmethod
@@ -47,14 +47,14 @@ class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_exception(cls, reason, status_code, **others):
+    def from_exception(cls, reason: T, status_code: int, **others):
         return cls(
             data=reason,
             meta=ResponseMetadata(error=status_code >= 400, message=message)
         )
 
     @classmethod
-    def from_api_route_params(cls, content: Any, description: Optional[str] = None, **others): 
+    def from_api_route_params(cls, content: Sequence[T], description: Optional[str] = None, **others): 
         # `content` parameter is the output from the `create` constructor.
         return cls(error=status_code >= 400, data=content.data, meta=content.meta)
 ```

@@ -1,9 +1,10 @@
 from __future__ import annotations
 import asyncio
-import inspect
 from typing import Callable, Optional, Any, Type, List, Sequence, Dict, Union, Set
 from functools import wraps
-from fastapi import params, Response, exceptions
+from pydantic import BaseModel
+from pydantic.utils import lenient_issubclass, lenient_isinstance
+from fastapi import params, Response
 from fastapi.encoders import DictIntStrAny, SetIntStr, jsonable_encoder
 from fastapi.routing import APIRoute
 from .interfaces import AbstractResponseSchema, ResponseWithMetadata
@@ -40,7 +41,7 @@ class SchemaAPIRoute(APIRoute):
 
     def is_error_state(self, status_code: Optional[int] = None) -> bool:
         """Handles the error_state for the operation evaluating the status_code.
-        This method gets called internally and should be overridden to modify the error state of the operation.
+        This method gets called internally and can be overridden to modify the error state of the operation.
 
         Args:
             status_code (Optional[int], optional): Operation status code. Defaults to None.
@@ -52,7 +53,7 @@ class SchemaAPIRoute(APIRoute):
 
     def get_wrapper_model(self, is_error: bool, response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
         """Implements the ResponseSchema selection logic.
-        This method gets called internally and should be overridden to gain control over the ResponseSchema selection logic.
+        This method gets called internally and can be overridden to gain control over the ResponseSchema selection logic.
 
         Args:
             is_error (int): wheteher or not the operation returns an error.
@@ -66,14 +67,20 @@ class SchemaAPIRoute(APIRoute):
         return self.error_response_schema if is_error else self.response_schema
 
     def override_response_model(
-        self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]
+        self,
+        wrapper_model: Type[AbstractResponseSchema[Any]],
+        response_model: Type[Any],
+        response_model_include: Optional[Union[SetIntStr, DictIntStrAny]] = None,
+        response_model_exclude: Optional[Union[SetIntStr, DictIntStrAny]] = None,
     ) -> Type[AbstractResponseSchema[Any]]:
         """Wraps the given response_model with the ResponseSchema.
-        This method gets called internally and should be overridden to gain control over the response_model wrapping logic.
+        This method gets called internally and can be overridden to gain control over the response_model wrapping logic.
 
         Args:
             wrapper_model (Type[AbstractResponseSchema[Any]]): ResponseSchema Model
             response_model (Type[Any]): response_model set for APIRoute
+            response_model_include (Optional[Union[SetIntStr, DictIntStrAny]], optional): Pydantic BaseModel include. Defaults to None.
+            response_model_exclude (Optional[Union[SetIntStr, DictIntStrAny]], optional): Pydantic BaseModel exclude. Defaults to None.
 
         Returns:
             Type[AbstractResponseSchema[Any]]: The response_model wrapped in response_schema
@@ -83,7 +90,7 @@ class SchemaAPIRoute(APIRoute):
     def _wrap_endpoint_output(
         self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params
     ) -> Any:
-        if isinstance(endpoint_output, ResponseWithMetadata):  # Handling the `respond` function
+        if lenient_isinstance(endpoint_output, ResponseWithMetadata):  # Handling the `respond` function
             params.update(endpoint_output.metadata)
             content = endpoint_output.response_content
         else:
@@ -164,16 +171,8 @@ class SchemaAPIRoute(APIRoute):
         callbacks: Optional[List["APIRoute"]] = None,
         **kwargs: Any,
     ) -> None:
-        try:
-            is_response_schema = issubclass(response_model, AbstractResponseSchema)
-        except TypeError:
-            if not inspect.isclass(response_model) and not response_model is None:
-                raise exceptions.FastAPIError(
-                    f"Invalid args for response field! Hint: check that {response_model} is a valid pydantic field type"
-                )
-            is_response_schema = False
-        if (
-            response_model and not is_response_schema
+        if response_model and not lenient_issubclass(
+            response_model, AbstractResponseSchema
         ):  # If a `response_model` is set, then wrap the `response_model` with a response schema
             WrapperModel = self.get_wrapper_model(
                 is_error=self.is_error_state(status_code=status_code), response_model=response_model
@@ -201,7 +200,12 @@ class SchemaAPIRoute(APIRoute):
                 response_class=response_class,
             )
             endpoint = endpoint_wrapper(endpoint)
-            response_model = self.override_response_model(wrapper_model=WrapperModel, response_model=response_model)
+            response_model = self.override_response_model(
+                wrapper_model=WrapperModel,
+                response_model=response_model,
+                response_model_include=response_model_include,
+                response_model_exclude=response_model_exclude,
+            )
         super().__init__(
             path,
             endpoint,

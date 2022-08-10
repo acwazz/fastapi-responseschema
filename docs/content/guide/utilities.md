@@ -19,7 +19,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
     code: str  # From a `result_code` field, not natively supported by constructors
 
     @classmethod
-    def from_exception(cls, reason: Any, status_code: int, result_code: str = "Error", **others):
+    def from_exception(cls, reason: T, status_code: int, result_code: str = "Error", **others):
         return cls(
             data=reason,
             error=status_code >= 400, 
@@ -28,7 +28,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
 
     @classmethod
     def from_api_route_params(
-        cls, content: Any, status_code: int, result_code: Optional[str] = None, **others
+        cls, content: T, status_code: int, result_code: Optional[str] = None, **others
     ):
         return cls(
             data=content,

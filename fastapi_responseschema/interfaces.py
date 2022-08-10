@@ -22,7 +22,7 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     @abstractmethod
     def from_api_route_params(
         cls: Type[TResponseSchema],
-        content: Any,
+        content: T,
         path: str,
         status_code: int,
         response_model: Optional[Type[BaseModel]] = None,
@@ -77,7 +77,7 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     @classmethod
     @abstractmethod
     def from_exception(
-        cls: Type[TResponseSchema], request: Request, reason: str, status_code: int, headers: dict, **extra_params: Any
+        cls: Type[TResponseSchema], request: Request, reason: T, status_code: int, headers: dict, **extra_params: Any
     ) -> TResponseSchema:  # pragma: no cover
         """Builds a ResponseSchema instance from an exception.
         This method must be overridden by subclasses.

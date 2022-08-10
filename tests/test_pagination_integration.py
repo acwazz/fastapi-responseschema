@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Any, Sequence
+from typing import TypeVar, Generic, Any, Sequence, Union
 import pytest
 from fastapi import FastAPI, APIRouter
 from fastapi.testclient import TestClient
@@ -21,7 +21,7 @@ T = TypeVar("T")
 
 
 class SimplePagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
-    data: Any
+    data: Union[Sequence[T], T]
     error: bool
     pagination: PaginationMetadata
 

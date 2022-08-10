@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Any, Optional, Type, Sequence
+from typing import Generic, TypeVar, Optional, Union, Sequence
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi_responseschema import AbstractResponseSchema, wrap_app_responses
@@ -21,20 +21,20 @@ class ResponseMetadata(BaseModel):
 
 
 class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
-    data: Any
+    data: T
     meta: ResponseMetadata
 
     @classmethod
-    def from_exception(cls, reason, status_code, message: str = "Error", **others):
+    def from_exception(cls, reason: T, status_code: int, message: str = "Error", **others):
         return cls(data=reason, meta=ResponseMetadata(error=status_code >= 400, message=message))
 
     @classmethod
-    def from_api_route_params(cls, content: Any, status_code: int, description: Optional[str] = None, **others):
+    def from_api_route_params(cls, content: T, status_code: int, description: Optional[str] = None, **others):
         return cls(data=content, meta=ResponseMetadata(error=status_code >= 400, message=description))
 
 
 class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
-    data: Any
+    data: Union[Sequence[T], T]
     meta: ResponseMetadata
 
     @classmethod
@@ -52,11 +52,11 @@ class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_exception(cls, reason, status_code, message: str = "Error", **others):
+    def from_exception(cls, reason: T, status_code: int, message: str = "Error", **others):
         return cls(data=reason, meta=ResponseMetadata(error=status_code >= 400, message=message))
 
     @classmethod
-    def from_api_route_params(cls, content: Any, status_code: int, description: Optional[str] = None, **others):
+    def from_api_route_params(cls, content: Sequence[T], status_code: int, description: Optional[str] = None, **others):
         return cls(error=status_code >= 400, data=content.data, meta=content.meta)
 
 
