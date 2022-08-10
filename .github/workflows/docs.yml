@@ -2,6 +2,21 @@ name: Build and deploy docs
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'info'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+      tags:
+        description: 'Testing'
+        required: false
+        type: boolean
 jobs:
   docs:
     runs-on: ubuntu-latest
