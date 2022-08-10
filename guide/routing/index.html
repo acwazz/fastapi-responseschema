@@ -402,6 +402,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#about-response_model_exclude-response_model_include-and-others-response_model_-parametrs" class="md-nav__link">
+    About response_model_exclude, response_model_include and others response_model_* parametrs
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -673,6 +680,86 @@
 </code></pre></div></p>
 <blockquote>
 <p>You still need to configure the route class for every <code>fastapi.APIRouter</code>.</p>
+</blockquote>
+<h3 id="about-response_model_exclude-response_model_include-and-others-response_model_-parametrs">About <code>response_model_exclude</code>, <code>response_model_include</code> and others <code>response_model_*</code> parametrs</h3>
+<p>When using response fields modifiers on-the-fly. you must consider that the final output of <code>response_model</code> will be wrapped by the conmfugred ResponseSchema.</p>
+<p>For this snippet:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span>
+<span class="kn">from</span> <span class="nn">fastapi_responseschema</span> <span class="kn">import</span> <span class="n">AbstractResponseSchema</span><span class="p">,</span> <span class="n">SchemaAPIRoute</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ResponseSchema</span><span class="p">(</span><span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">T</span>
+    <span class="n">error</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+    <span class="o">...</span> <span class="c1"># constructors etc.</span>
+
+<span class="k">class</span> <span class="nc">Item</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">additional_desc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">MainAPIRoute</span><span class="p">(</span><span class="n">SchemaAPIRoute</span><span class="p">):</span>
+    <span class="n">response_schema</span> <span class="o">=</span> <span class="n">ResponseSchema</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">route_class</span><span class="o">=</span><span class="n">MainAPIRoute</span><span class="p">)</span>
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/item&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">Item</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">show_item</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Just a Teapot!&quot;</span><span class="p">}</span>
+</code></pre></div></p>
+<p>The resulting response payload of <code>GET /items</code> will be:
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Just a Teapot!&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;additional_desc&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></p>
+<p>When applying the <code>response_model_exclude</code> and <code>additional_model_include</code> for the <code>response_model</code> remeber to consider the nested output.</p>
+<p>For Example:
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/item&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">Item</span><span class="p">,</span> <span class="n">response_model_exclude</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">}})</span>  <span class="c1"># Exclusion of nested fields</span>
+<span class="k">def</span> <span class="nf">show_item</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Just a Teapot!&quot;</span><span class="p">}</span>
+</code></pre></div>
+Returns:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;additional_desc&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<p>When you use <code>response_model_exclude_none</code> and similar parameters the configuration will be applyed to all the response schema.</p>
+<p>For example:
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/item&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">Item</span><span class="p">,</span> <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Exclusion of nested fields</span>
+<span class="k">def</span> <span class="nf">show_item</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Just a Teapot!&quot;</span><span class="p">}</span>
+</code></pre></div>
+Returns:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Just a Teapot!&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+<blockquote>
+<p>To modify the response content you should prefer the definition of dedicated models.</p>
 </blockquote>
 
               

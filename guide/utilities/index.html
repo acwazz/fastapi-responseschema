@@ -583,7 +583,7 @@
   <h1>Utilities</h1>
 
 <h3 id="additional-metadata-in-the-resulting-response-schema">Additional metadata in the resulting response schema</h3>
-<p>If you need to add fields to the response schema that are not supported by <a href="/api/interfaces/#from_api_route_params"><code>AbstractResponseSchema.from_api_route_params</code></a>, you can use the <code>respond</code> function.</p>
+<p>If you need to add fields to the response schema that are not supported by <a href="/api/interfaces/#from_api_route"><code>AbstractResponseSchema.from_api_route</code></a>, you can use the <code>respond</code> function.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># schemas.py file</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
 <span class="kn">from</span> <span class="nn">fastapi_responseschema</span> <span class="kn">import</span> <span class="n">AbstractResponseSchema</span>
@@ -592,12 +592,12 @@
 
 
 <span class="k">class</span> <span class="nc">ResponseSchema</span><span class="p">(</span><span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">T</span>
     <span class="n">error</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">code</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># From a `result_code` field, not natively supported by constructors</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_exception</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">result_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_exception</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">result_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
             <span class="n">error</span><span class="o">=</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="mi">400</span><span class="p">,</span> 
@@ -605,8 +605,8 @@
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_api_route_params</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">result_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span>
+    <span class="k">def</span> <span class="nf">from_api_route</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">result_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>

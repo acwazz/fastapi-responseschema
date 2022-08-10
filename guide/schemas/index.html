@@ -383,8 +383,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#abstractresponseschemafrom_api_route_params" class="md-nav__link">
-    AbstractResponseSchema.from_api_route_params
+  <a href="#abstractresponseschemafrom_api_route" class="md-nav__link">
+    AbstractResponseSchema.from_api_route
   </a>
   
 </li>
@@ -613,9 +613,9 @@
 <h3 id="abstractresponseschemafrom_exception"><code>AbstractResponseSchema.from_exception</code></h3>
 <p>This constructor wraps the final response from an <a href="https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers">exception handler</a>.
 You can view the full parameter list <a href="/api/interfaces/#from_exception">here</a>.</p>
-<h3 id="abstractresponseschemafrom_api_route_params"><code>AbstractResponseSchema.from_api_route_params</code></h3>
+<h3 id="abstractresponseschemafrom_api_route"><code>AbstractResponseSchema.from_api_route</code></h3>
 <p>This constructor wraps the final response when initializing an <a href="https://fastapi.tiangolo.com/advanced/custom-request-and-route/?h=apiroute">APIRoute</a>.
-You can view the full parameter list <a href="/api/interfaces/#from_api_route_params">here</a>.</p>
+You can view the full parameter list <a href="/api/interfaces/#from_api_route">here</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
 <span class="kn">from</span> <span class="nn">fastapi_responseschema</span> <span class="kn">import</span> <span class="n">AbstractResponseSchema</span>
 
@@ -623,12 +623,12 @@ You can view the full parameter list <a href="/api/interfaces/#from_api_route_pa
 
 
 <span class="k">class</span> <span class="nc">ResponseSchema</span><span class="p">(</span><span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">T</span>
     <span class="n">error</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_exception</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span>  <span class="c1"># from an exception handler </span>
+    <span class="k">def</span> <span class="nf">from_exception</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span>  <span class="c1"># from an exception handler </span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
             <span class="n">error</span><span class="o">=</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="mi">400</span><span class="p">,</span> 
@@ -636,8 +636,8 @@ You can view the full parameter list <a href="/api/interfaces/#from_api_route_pa
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_api_route_params</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span>
+    <span class="k">def</span> <span class="nf">from_api_route</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span>
     <span class="p">):</span>  <span class="c1"># from an api route</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>

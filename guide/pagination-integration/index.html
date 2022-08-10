@@ -594,7 +594,7 @@
 <h2 id="pagedresponseschema">PagedResponseSchema</h2>
 <p>A <code>PagedResponseSchema</code> is a generic that inherits from <code>fastapi_pagination.base.AbstractPage</code> and <code>fastapi_responseschema.interfaces.AbstractResponseSchema</code>.</p>
 <p>You can use this type of classes to handle pagination with a global response schema logic.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">fastapi_responseschema.integrations.pagination</span> <span class="kn">import</span> <span class="n">AbstractPagedResponseSchema</span><span class="p">,</span> <span class="n">PaginationMetadata</span><span class="p">,</span> <span class="n">PagedSchemaAPIRoute</span><span class="p">,</span> <span class="n">PaginationParams</span>
 
 
@@ -603,8 +603,10 @@
     <span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">pagination</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PaginationMetadata</span><span class="p">]</span>
 
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
 <span class="k">class</span> <span class="nc">PagedResponseSchema</span><span class="p">(</span><span class="n">AbstractPagedResponseSchema</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]</span>  <span class="c1"># In case of error response we will pass a scalar type, a string or a dict</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">ResponseMetadata</span>
 
     <span class="nd">@classmethod</span>
@@ -615,7 +617,7 @@
             <span class="n">params</span><span class="p">:</span> <span class="n">PaginationParams</span><span class="p">,</span>
     <span class="p">):</span>  <span class="c1"># This constructor gets called first and creates the FastAPI Pagination response model.</span>
     <span class="c1"># For fields that are not present in this method signature just set some defaults,</span>
-    <span class="c1"># you will override them in the `from_api_route_params` constructor</span>
+    <span class="c1"># you will override them in the `from_api_route` constructor</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">items</span><span class="p">,</span>
             <span class="n">meta</span><span class="o">=</span><span class="n">ResponseMetadata</span><span class="p">(</span>
@@ -625,14 +627,14 @@
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_exception</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reason</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_exception</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">status_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
             <span class="n">meta</span><span class="o">=</span><span class="n">ResponseMetadata</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_api_route_params</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">from_api_route</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">others</span><span class="p">):</span> 
         <span class="c1"># `content` parameter is the output from the `create` constructor.</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">content</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">content</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
 </code></pre></div>
