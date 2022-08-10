@@ -27,9 +27,9 @@ When creating a response schema, constructors must be defined in subclass to ens
 This constructor wraps the final response from an [exception handler](https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers).
 You can view the full parameter list [here](/api/interfaces/#from_exception).
 
-### `AbstractResponseSchema.from_api_route_params`
+### `AbstractResponseSchema.from_api_route`
 This constructor wraps the final response when initializing an [APIRoute](https://fastapi.tiangolo.com/advanced/custom-request-and-route/?h=apiroute).
-You can view the full parameter list [here](/api/interfaces/#from_api_route_params).
+You can view the full parameter list [here](/api/interfaces/#from_api_route).
 
 
 ```py
@@ -53,7 +53,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_api_route_params(
+    def from_api_route(
         cls, content: T, status_code: int, description: Optional[str] = None, **others
     ):  # from an api route
         return cls(

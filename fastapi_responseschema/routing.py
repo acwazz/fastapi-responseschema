@@ -2,7 +2,6 @@ from __future__ import annotations
 import asyncio
 from typing import Callable, Optional, Any, Type, List, Sequence, Dict, Union, Set
 from functools import wraps
-from pydantic import BaseModel
 from pydantic.utils import lenient_issubclass, lenient_isinstance
 from fastapi import params, Response
 from fastapi.encoders import DictIntStrAny, SetIntStr, jsonable_encoder
@@ -67,11 +66,7 @@ class SchemaAPIRoute(APIRoute):
         return self.error_response_schema if is_error else self.response_schema
 
     def override_response_model(
-        self,
-        wrapper_model: Type[AbstractResponseSchema[Any]],
-        response_model: Type[Any],
-        response_model_include: Optional[Union[SetIntStr, DictIntStrAny]] = None,
-        response_model_exclude: Optional[Union[SetIntStr, DictIntStrAny]] = None,
+        self, wrapper_model: Type[AbstractResponseSchema[Any]], response_model: Type[Any]
     ) -> Type[AbstractResponseSchema[Any]]:
         """Wraps the given response_model with the ResponseSchema.
         This method gets called internally and can be overridden to gain control over the response_model wrapping logic.
@@ -96,16 +91,8 @@ class SchemaAPIRoute(APIRoute):
         else:
             content = endpoint_output
         params["status_code"] = params.get("status_code") or 200
-        return wrapper_model[response_model].from_api_route_params(
-            content=jsonable_encoder(
-                obj=content,
-                include=params.get("response_model_include"),
-                exclude=params.get("response_model_exclude"),
-                by_alias=params.get("response_model_by_alias"),
-                exclude_unset=params.get("response_model_exclude_unset"),
-                exclude_defaults=params.get("response_model_exclude_defaults"),
-                exclude_none=params.get("response_model_exclude_none"),
-            ),
+        return wrapper_model[response_model].from_api_route(
+            content=content,
             response_model=response_model,
             **params,
         )
@@ -200,12 +187,7 @@ class SchemaAPIRoute(APIRoute):
                 response_class=response_class,
             )
             endpoint = endpoint_wrapper(endpoint)
-            response_model = self.override_response_model(
-                wrapper_model=WrapperModel,
-                response_model=response_model,
-                response_model_include=response_model_include,
-                response_model_exclude=response_model_exclude,
-            )
+            response_model = self.override_response_model(wrapper_model=WrapperModel, response_model=response_model)
         super().__init__(
             path,
             endpoint,
@@ -221,12 +203,12 @@ class SchemaAPIRoute(APIRoute):
             name=name,
             methods=methods,
             operation_id=operation_id,
-            response_model_include=None,
-            response_model_exclude=None,
-            response_model_by_alias=True,
-            response_model_exclude_unset=False,
-            response_model_exclude_defaults=False,
-            response_model_exclude_none=False,
+            response_model_include=response_model_include,
+            response_model_exclude=response_model_exclude,
+            response_model_by_alias=response_model_by_alias,
+            response_model_exclude_unset=response_model_exclude_unset,
+            response_model_exclude_defaults=response_model_exclude_defaults,
+            response_model_exclude_none=response_model_exclude_none,
             include_in_schema=include_in_schema,
             response_class=response_class,
             dependency_overrides_provider=dependency_overrides_provider,

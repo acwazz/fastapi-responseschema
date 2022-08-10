@@ -25,7 +25,7 @@ def test_from_exception_handler():
     assert resp.data == exc.detail
 
 
-def test_from_api_route_params():
-    resp = SimpleResponseSchema[dict].from_api_route_params(content={"hello": "world"}, status_code=201)
+def test_from_api_route():
+    resp = SimpleResponseSchema[dict].from_api_route(content={"hello": "world"}, status_code=201)
     assert not resp.error
     assert resp.data.get("hello") == "world"

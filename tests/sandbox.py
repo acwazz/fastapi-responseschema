@@ -29,7 +29,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         return cls(data=reason, meta=ResponseMetadata(error=status_code >= 400, message=message))
 
     @classmethod
-    def from_api_route_params(cls, content: T, status_code: int, description: Optional[str] = None, **others):
+    def from_api_route(cls, content: T, status_code: int, description: Optional[str] = None, **others):
         return cls(data=content, meta=ResponseMetadata(error=status_code >= 400, message=description))
 
 
@@ -56,7 +56,7 @@ class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
         return cls(data=reason, meta=ResponseMetadata(error=status_code >= 400, message=message))
 
     @classmethod
-    def from_api_route_params(cls, content: Sequence[T], status_code: int, description: Optional[str] = None, **others):
+    def from_api_route(cls, content: Sequence[T], status_code: int, description: Optional[str] = None, **others):
         return cls(error=status_code >= 400, data=content.data, meta=content.meta)
 
 

@@ -3,7 +3,7 @@ hide:
   - footer
 ---
 ### Additional metadata in the resulting response schema
-If you need to add fields to the response schema that are not supported by [`AbstractResponseSchema.from_api_route_params`](/api/interfaces/#from_api_route_params), you can use the `respond` function.
+If you need to add fields to the response schema that are not supported by [`AbstractResponseSchema.from_api_route`](/api/interfaces/#from_api_route), you can use the `respond` function.
 
 ```py
 # schemas.py file
@@ -27,7 +27,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_api_route_params(
+    def from_api_route(
         cls, content: T, status_code: int, result_code: Optional[str] = None, **others
     ):
         return cls(

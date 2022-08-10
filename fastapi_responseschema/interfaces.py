@@ -16,11 +16,11 @@ TResponseSchema = TypeVar("TResponseSchema", bound="AbstractResponseSchema")
 class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     """Abstract generic model for building response schema interfaces."""
 
-    __inner_types__: ClassVar[Optional[Type]] = None
+    __inner_type__: ClassVar[Optional[Type]] = None
 
     @classmethod
     @abstractmethod
-    def from_api_route_params(
+    def from_api_route(
         cls: Type[TResponseSchema],
         content: T,
         path: str,
@@ -101,7 +101,7 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
             RequestValidationError, StarletteHTTPException, FastAPIHTTPException, BaseGenericHTTPException
         ],
     ) -> TResponseSchema:
-        """Used in excpetion handlers to build a ResponseSchema instance.
+        """Used in exception handlers to build a ResponseSchema instance.
         This method should not be overridden by subclasses.
 
         Args:
@@ -123,7 +123,7 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     def __class_getitem__(
         cls: Type[TResponseSchema], params: Union[Type[Any], Tuple[Type[Any], ...]]
     ) -> Type[TResponseSchema]:
-        cls.__inner_types__ = params
+        cls.__inner_type__ = params
         return super().__class_getitem__(params)
 
     class Config:

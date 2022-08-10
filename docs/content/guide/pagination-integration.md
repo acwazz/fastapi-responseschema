@@ -37,7 +37,7 @@ class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
             params: PaginationParams,
     ):  # This constructor gets called first and creates the FastAPI Pagination response model.
     # For fields that are not present in this method signature just set some defaults,
-    # you will override them in the `from_api_route_params` constructor
+    # you will override them in the `from_api_route` constructor
         return cls(
             data=items,
             meta=ResponseMetadata(
@@ -54,7 +54,7 @@ class PagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_api_route_params(cls, content: Sequence[T], description: Optional[str] = None, **others): 
+    def from_api_route(cls, content: Sequence[T], description: Optional[str] = None, **others): 
         # `content` parameter is the output from the `create` constructor.
         return cls(error=status_code >= 400, data=content.data, meta=content.meta)
 ```

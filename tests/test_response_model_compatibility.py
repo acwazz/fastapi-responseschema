@@ -20,7 +20,7 @@ app = FastAPI()
 wrap_app_responses(app, Route)
 
 
-@app.get("/model-exclude", response_model=RModel, response_model_exclude={"name"})
+@app.get("/model-exclude", response_model=RModel, response_model_exclude={"data": {"name"}})
 def filter_via_response_model_exclude():
     return {"id": 1, "name": "excluded"}
 
@@ -33,7 +33,7 @@ def filter_via_response_model_schema():
 client = TestClient(app)
 
 
-def test_response_model_exclude_is_preserved():
+def test_response_model_exclude_works():
     r = client.get("/model-exclude")
     assert r.json() == {"error": False, "data": {"id": "1"}}
 

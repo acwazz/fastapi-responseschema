@@ -14,7 +14,7 @@ from .common import SimpleResponseSchema
 
 def test_paged_response_schema_inner_types():
     V = AbstractPagedResponseSchema[int]
-    assert V.__inner_types__ == int
+    assert V.__inner_type__ == int
 
 
 T = TypeVar("T")
@@ -36,7 +36,7 @@ class SimplePagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
         return cls(data=reason, error=status_code >= 400)
 
     @classmethod
-    def from_api_route_params(cls, content: Any, status_code: int, **others):
+    def from_api_route(cls, content: Any, status_code: int, **others):
         return cls(error=status_code >= 400, data=content.data, pagination=content.pagination)
 
 

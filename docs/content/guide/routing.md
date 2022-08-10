@@ -108,5 +108,96 @@ def just_a_route():
 
 > You still need to configure the route class for every `fastapi.APIRouter`.
 
+### About `response_model_exclude`, `response_model_include` and others `response_model_*` parametrs
+When using response fields modifiers on-the-fly. you must consider that the final output of `response_model` will be wrapped by the conmfugred ResponseSchema.
 
+For this snippet:
+```py
+from typing import TypeVar, Generic
+from pydantic import BaseModel
+from fastapi import APIRouter
+from fastapi_responseschema import AbstractResponseSchema, SchemaAPIRoute
 
+T = TypeVar("T")
+
+class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
+    data: T
+    error: bool
+    message: Optional[str]
+
+    ... # constructors etc.
+
+class Item(BaseModel):
+    id: int
+    name: str
+    additional_desc: Optional[str]
+
+class MainAPIRoute(SchemaAPIRoute):
+    response_schema = ResponseSchema
+
+router = APIRouter(route_class=MainAPIRoute)
+
+@router.get("/item", response_model=Item)
+def show_item():
+    return {"id": 11, "name": "Just a Teapot!"}
+```
+
+The resulting response payload of `GET /items` will be:
+```json
+{
+    "data": {
+        "id": 11, 
+        "name": "Just a Teapot!",
+        "additional_desc": null
+    },
+    "error": false,
+    "message": null
+}
+```
+
+When applying the `response_model_exclude` and `additional_model_include` for the `response_model` remeber to consider the nested output.
+
+For Example:
+```py
+...
+
+@router.get("/item", response_model=Item, response_model_exclude={"data": {"name"}})  # Exclusion of nested fields
+def show_item():
+    return {"id": 11, "name": "Just a Teapot!"}
+```
+Returns:
+
+```json
+{
+    "data": {
+        "id": 11, 
+        "additional_desc": null
+    },
+    "error": false,
+    "message": null
+}
+```
+
+When you use `response_model_exclude_none` and similar parameters the configuration will be applyed to all the response schema.
+
+For example:
+```py
+...
+
+@router.get("/item", response_model=Item, response_model_exclude_none=True)  # Exclusion of nested fields
+def show_item():
+    return {"id": 11, "name": "Just a Teapot!"}
+```
+Returns:
+
+```json
+{
+    "data": {
+        "id": 11, 
+        "name": "Just a Teapot!"
+    },
+    "error": false
+}
+```
+
+> To modify the response content you should prefer the definition of dedicated models.

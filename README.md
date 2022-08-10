@@ -54,7 +54,7 @@ class ResponseSchema(AbstractResponseSchema[T], Generic[T]):
         )
 
     @classmethod
-    def from_api_route_params(
+    def from_api_route(
         cls, content: Any, status_code: int, description: Optional[str] = None, **others
     ):
         return cls(
