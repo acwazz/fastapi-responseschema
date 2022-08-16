@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#testing" class="md-skip">
+        <a href="#contributing" class="md-skip">
           Skip to content
         </a>
       
@@ -532,6 +532,47 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    Contributing
+  </a>
+  
+    <nav class="md-nav" aria-label="Contributing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-to-contribute" class="md-nav__link">
+    How to contribute
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guidelines" class="md-nav__link">
+    Guidelines
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enviroment" class="md-nav__link">
+    Enviroment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formatting" class="md-nav__link">
+    Formatting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing" class="md-nav__link">
     Testing
   </a>
@@ -576,28 +617,26 @@
 
   <h1>Contibuting</h1>
 
-<p>}
-<div class="highlight"><pre><span></span><code>## Contributing
-
-Contributions are very welcome!
-
-### How to contribute
-Just open an issue or submit a pull request on [GitHub](https://github.com/acwazz/fastapi-responseschema).
-
-While submitting a pull request describe what changes have been made.
-
-
-## Guidelines
-- Try to adhere as much as possible to the Python style and language conventions.
-- Add unit tests for classes and methods. 
-- When writing features exposed in API, always add documentation following the Google Style Python docstrings.
-
-## Enviroment
-This package is developed using Python version `3.8`.
-
-This package uses [poetry](https://python-poetry.org/) to handle dependencies, you can install them with:
-```sh
-poetry install -E pagination
+<h2 id="contributing">Contributing</h2>
+<p>Contributions are very welcome!</p>
+<h3 id="how-to-contribute">How to contribute</h3>
+<p>Just open an issue or submit a pull request on <a href="https://github.com/acwazz/fastapi-responseschema">GitHub</a>.</p>
+<p>While submitting a pull request describe what changes have been made.</p>
+<h2 id="guidelines">Guidelines</h2>
+<ul>
+<li>Try to adhere as much as possible to the Python style and language conventions.</li>
+<li>Add unit tests for classes and methods. </li>
+<li>When writing features exposed in API, always add documentation following the Google Style Python docstrings.</li>
+</ul>
+<h2 id="enviroment">Enviroment</h2>
+<p>This package is developed using Python version <code>3.8</code>.</p>
+<p>This package uses <a href="https://python-poetry.org/">poetry</a> to handle dependencies, you can install them with:
+<div class="highlight"><pre><span></span><code>poetry install -E pagination
+</code></pre></div></p>
+<h2 id="formatting">Formatting</h2>
+<p><a href="https://black.readthedocs.io/en/stable/">Black</a> is used to provide code autoformatting e linting.
+Before committing your changes run <code>black</code>:
+<div class="highlight"><pre><span></span><code>black .
 </code></pre></div></p>
 <h2 id="testing">Testing</h2>
 <p>Tests are written using <a href="https://docs.pytest.org/en/7.1.x/">pytest</a>.
