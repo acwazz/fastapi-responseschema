@@ -1,5 +1,5 @@
 # ☄️ FastAPI Response Schema
-[![PyPI](https://img.shields.io/pypi/v/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/releases) [![Commits](https://img.shields.io/github/last-commit/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/commit/master) [![PyPI - Downloads](https://img.shields.io/pypi/dd/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/)
+[![PyPI](https://img.shields.io/pypi/v/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/releases) [![Commits](https://img.shields.io/github/last-commit/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/commit/master) [![PyPI - Downloads](https://img.shields.io/pypi/dd/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/)[![Tests](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml)[![Lint](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml)
 
 > FastAPI Response Schema is still **experimental and in active development**. 
 > 
@@ -110,6 +110,11 @@ content-type: application/json
 ```
 
 
+## Docs
+You can find detailed info for this package in the [Documentation](https://acwazz.github.io/fastapi-responseschema/).
+
+
+
 ## Contributing
 
 Contributions are very welcome!
@@ -118,6 +123,8 @@ Contributions are very welcome!
 Just open an issue or submit a pull request on [GitHub](https://github.com/acwazz/fastapi-responseschema).
 
 While submitting a pull request describe what changes have been made.
+
+More info on [Docs section](https://acwazz.github.io/fastapi-responseschema/contributing/)
 
 ## Contributors Wall
 [![Contributors Wall](https://contrib.rocks/image?repo=acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/graphs/contributors)

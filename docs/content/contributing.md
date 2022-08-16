@@ -1,9 +1,10 @@
-@cat ../../README.md :with slice_lines = "108:"
+@cat ../../README.md :with slice_lines = "117:126"
 
 ## Guidelines
 - Try to adhere as much as possible to the Python style and language conventions.
 - Add unit tests for classes and methods. 
 - When writing features exposed in API, always add documentation following the Google Style Python docstrings.
+
 
 ## Enviroment
 This package is developed using Python version `3.8`.
@@ -13,6 +14,14 @@ This package uses [poetry](https://python-poetry.org/) to handle dependencies, y
 poetry install -E pagination
 ```
 
+
+## Formatting
+[Black](https://black.readthedocs.io/en/stable/) is used to provide code autoformatting e linting.
+Before committing your changes run `black`:
+```sh
+black .
+```
+
 ## Testing
 Tests are written using [pytest](https://docs.pytest.org/en/7.1.x/).
 To run the test suite just type in your terminal:
@@ -20,6 +29,7 @@ To run the test suite just type in your terminal:
 pytest
 ```
 This will generate the coverage in html format in a root level directory `htmlcov`.
+
 
 ## Documentation
 Documentation is built using [pydoc-markdown](https://niklasrosenstein.github.io/pydoc-markdown/).
