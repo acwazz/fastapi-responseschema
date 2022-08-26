@@ -320,18 +320,18 @@ fastapi = ">=0.61.2"
 pydantic = ">=1.7.2"
 
 [package.extras]
-all = ["Django (<3.3.0)", "SQLAlchemy (>=1.3.20)", "asyncpg (>=0.24.0)", "databases[sqlite,mysql,postgresql] (>=0.4.0)", "gino[starlette] (>=1.0.1)", "mongoengine (>=0.23.1,<0.25.0)", "motor (>=2.5.1,<3.0.0)", "orm (>=0.1.5)", "ormar (>=0.10.5)", "piccolo (>=0.29,<0.35)", "tortoise-orm[asyncpg,aiomysql,aiosqlite] (>=0.16.18,<0.20.0)"]
+all = ["Django (<3.3.0)", "SQLAlchemy (>=1.3.20)", "asyncpg (>=0.24.0)", "databases[sqlite,postgresql,mysql] (>=0.4.0)", "gino[starlette] (>=1.0.1)", "mongoengine (>=0.23.1,<0.25.0)", "motor (>=2.5.1,<3.0.0)", "orm (>=0.1.5)", "ormar (>=0.10.5)", "piccolo (>=0.29,<0.35)", "tortoise-orm[aiosqlite,aiomysql,asyncpg] (>=0.16.18,<0.20.0)"]
 asyncpg = ["SQLAlchemy (>=1.3.20)", "asyncpg (>=0.24.0)"]
-databases = ["databases[sqlite,mysql,postgresql] (>=0.4.0)"]
-django = ["Django (<3.3.0)", "databases[sqlite,mysql,postgresql] (>=0.4.0)"]
+databases = ["databases[sqlite,postgresql,mysql] (>=0.4.0)"]
+django = ["Django (<3.3.0)", "databases[sqlite,postgresql,mysql] (>=0.4.0)"]
 gino = ["SQLAlchemy (>=1.3.20)", "gino[starlette] (>=1.0.1)"]
 mongoengine = ["mongoengine (>=0.23.1,<0.25.0)"]
 motor = ["motor (>=2.5.1,<3.0.0)"]
-orm = ["databases[sqlite,mysql,postgresql] (>=0.4.0)", "orm (>=0.1.5)", "typesystem (>=0.2.0,<0.3.0)"]
+orm = ["databases[sqlite,postgresql,mysql] (>=0.4.0)", "orm (>=0.1.5)", "typesystem (>=0.2.0,<0.3.0)"]
 ormar = ["ormar (>=0.10.5)"]
 piccolo = ["piccolo (>=0.29,<0.35)"]
 sqlalchemy = ["SQLAlchemy (>=1.3.20)"]
-tortoise = ["tortoise-orm[asyncpg,aiomysql,aiosqlite] (>=0.16.18,<0.20.0)"]
+tortoise = ["tortoise-orm[aiosqlite,aiomysql,asyncpg] (>=0.16.18,<0.20.0)"]
 
 [[package]]
 name = "ghp-import"
@@ -572,7 +572,7 @@ i18n = ["babel (>=2.9.0)"]
 
 [[package]]
 name = "mkdocs-material"
-version = "8.3.9"
+version = "8.4.1"
 description = "Documentation that simply works"
 category = "dev"
 optional = false
@@ -1182,7 +1182,7 @@ pagination = ["fastapi-pagination"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "cf903f11b35352fa10e6feb9f1a08546bf48d1ce74efa7bf238b63b44aef5929"
+content-hash = "471aca6e7f106d874a61350de876ac310a7593730e5b00636188fa958e548038"
 
 [metadata.files]
 anyio = [
@@ -1488,8 +1488,8 @@ mkdocs = [
     {file = "mkdocs-1.3.1.tar.gz", hash = "sha256:a41a2ff25ce3bbacc953f9844ba07d106233cd76c88bac1f59cb1564ac0d87ed"},
 ]
 mkdocs-material = [
-    {file = "mkdocs-material-8.3.9.tar.gz", hash = "sha256:dc82b667d2a83f0de581b46a6d0949732ab77e7638b87ea35b770b33bc02e75a"},
-    {file = "mkdocs_material-8.3.9-py2.py3-none-any.whl", hash = "sha256:263f2721f3abe533b61f7c8bed435a0462620912742c919821ac2d698b4bfe67"},
+    {file = "mkdocs-material-8.4.1.tar.gz", hash = "sha256:92c70f94b2e1f8a05d9e05eec1c7af9dffc516802d69222329db89503c97b4f3"},
+    {file = "mkdocs_material-8.4.1-py2.py3-none-any.whl", hash = "sha256:319a6254819ce9d864ff79de48c43842fccfdebb43e4e6820eef75216f8cfb0a"},
 ]
 mkdocs-material-extensions = [
     {file = "mkdocs-material-extensions-1.0.3.tar.gz", hash = "sha256:bfd24dfdef7b41c312ede42648f9eb83476ea168ec163b613f9abd12bbfddba2"},
