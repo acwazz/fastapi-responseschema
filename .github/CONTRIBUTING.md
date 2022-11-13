@@ -29,6 +29,13 @@ Before committing your changes run `black`:
 black .
 ```
 
+## Type checking
+[mypy](https://mypy.readthedocs.io/en/stable/index.html) is used to statically type check the source code.
+Before committing your changes run `mypy`:
+```sh
+mypy fastapi_responseschema
+```
+
 ## Testing
 Tests are written using [pytest](https://docs.pytest.org/en/7.1.x/).
 To run the test suite just type in your terminal:

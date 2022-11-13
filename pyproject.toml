@@ -14,22 +14,22 @@ python = "^3.8"
 fastapi = ">=0.66.0"
 fastapi-pagination = {version = "^0", optional = true}
 
-[tool.poetry.dev-dependencies]
-pydoc-markdown = {extras = ["docs"], version = "^4.6.3"}
+[tool.poetry.extras]
+pagination = ["fastapi-pagination"]
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.990"
+pydoc-markdown = "^4.6.4"
 novella = "^0.2.3"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 pytest-asyncio = "^0.20.2"
 requests = "^2.28.1"
 uvicorn = "^0.19.0"
-ipython = "^8.5.0"
-mkdocs = "^1.4.0"
-mkdocs-material = "^8.5.3"
-pyre-check = "^0.9.16"
+ipython = "^8.6.0"
+mkdocs = "^1.4.2"
+mkdocs-material = "^8.5.10"
 black = "^22.10.0"
-
-[tool.poetry.extras]
-pagination = ["fastapi-pagination"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -52,6 +52,11 @@ search_path = [ "fastapi_responseschema" ]
 
 [tool.pydoc-markdown.renderer]
 type = "mkdocs"
+
+[tool.mypy]
+exclude = "tests"
+disallow_untyped_defs = true
+ignore_missing_imports = true
 
 [tool.black]
 line-length = 120
