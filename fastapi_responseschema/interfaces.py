@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Any, Type, List, Union, Set, TypeVar, Generic, NamedTuple, ClassVar, Tuple
+from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from fastapi import Request, Response
 from pydantic import BaseModel
@@ -13,10 +14,46 @@ T = TypeVar("T")
 TResponseSchema = TypeVar("TResponseSchema", bound="AbstractResponseSchema")
 
 
+@dataclass
+class HTTPExceptionAdapter:
+    reason: Any
+    status_code: int
+    headers: Optional[dict]
+    extra_params: Any
+
+    @classmethod
+    def from_starlette_exc(cls, exc: StarletteHTTPException) -> "HTTPExceptionAdapter":
+        return cls(
+            status_code=exc.status_code, reason=getattr(exc, "detail", str(exc)), headers=None, extra_params=dict()
+        )
+
+    @classmethod
+    def from_fastapi_exc(cls, exc: FastAPIHTTPException) -> "HTTPExceptionAdapter":
+        return cls(
+            status_code=exc.status_code,
+            reason=getattr(exc, "detail", str(exc)),
+            headers=exc.headers,
+            extra_params=dict(),
+        )
+
+    @classmethod
+    def from_request_validation_err(cls, exc: RequestValidationError) -> "HTTPExceptionAdapter":
+        return cls(status_code=422, reason=exc.errors(), headers=None, extra_params=dict())
+
+    @classmethod
+    def from_generic_http_exc(cls, exc: BaseGenericHTTPException) -> "HTTPExceptionAdapter":
+        return cls(
+            status_code=exc.status_code if exc.status_code is not None else 500,
+            reason=exc.detail,
+            headers=exc.headers,
+            extra_params=exc.extra_params,
+        )
+
+
 class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     """Abstract generic model for building response schema interfaces."""
 
-    __inner_type__: ClassVar[Optional[Type]] = None
+    __inner_type__: ClassVar[Union[Type[Any], Tuple[Type[Any], ...]]]
 
     @classmethod
     @abstractmethod
@@ -77,7 +114,12 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
     @classmethod
     @abstractmethod
     def from_exception(
-        cls: Type[TResponseSchema], request: Request, reason: T, status_code: int, headers: dict, **extra_params: Any
+        cls: Type[TResponseSchema],
+        request: Request,
+        reason: T,
+        status_code: int,
+        headers: Optional[dict] = None,
+        **extra_params: Any,
     ) -> TResponseSchema:  # pragma: no cover
         """Builds a ResponseSchema instance from an exception.
         This method must be overridden by subclasses.
@@ -111,14 +153,21 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
         Returns:
             TResponseSchema: A ResponseSchema instance
         """
-        is_http_exception_family = isinstance(exception, (StarletteHTTPException, FastAPIHTTPException))
-        params = {
-            "reason": getattr(exception, "detail", str(exception)) if is_http_exception_family else exception.errors(),
-            "status_code": exception.status_code if is_http_exception_family else 422,
-            "headers": exception.headers if isinstance(exception, FastAPIHTTPException) else dict(),
-        }
-        params.update(exception.extra_params if isinstance(exception, BaseGenericHTTPException) else dict())
-        return cls.from_exception(request=request, **params)
+        if isinstance(exception, BaseGenericHTTPException):
+            adapted = HTTPExceptionAdapter.from_generic_http_exc(exception)
+        elif isinstance(exception, FastAPIHTTPException):
+            adapted = HTTPExceptionAdapter.from_fastapi_exc(exception)
+        elif isinstance(exception, StarletteHTTPException):
+            adapted = HTTPExceptionAdapter.from_starlette_exc(exception)
+        else:
+            adapted = HTTPExceptionAdapter.from_request_validation_err(exception)
+        return cls.from_exception(
+            request=request,
+            reason=adapted.reason,
+            status_code=adapted.status_code,
+            headers=adapted.headers,
+            **adapted.extra_params,
+        )
 
     def __class_getitem__(
         cls: Type[TResponseSchema], params: Union[Type[Any], Tuple[Type[Any], ...]]

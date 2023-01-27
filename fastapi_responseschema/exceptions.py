@@ -7,7 +7,7 @@ from fastapi.exceptions import HTTPException as FastAPIHTTPException
 class BaseGenericHTTPException(FastAPIHTTPException):
     """BaseClass for HTTPExceptions with additional data"""
 
-    status_code: Optional[int] = None
+    status_code: Optional[int] = None  # type: ignore
 
     def __init__(self, detail: Any = None, headers: Optional[Dict[str, Any]] = None, **extra_params: Any) -> None:
         """Instances can be initialized with a set of extra params.
@@ -17,12 +17,12 @@ class BaseGenericHTTPException(FastAPIHTTPException):
             headers (Optional[Dict[str, Any]], optional): A set of headers to be returned in the response. Defaults to None.
         """
         self.extra_params = extra_params
-        super().__init__(status_code=self.status_code, detail=detail, headers=headers)
+        super().__init__(status_code=self.status_code, detail=detail, headers=headers)  # type: ignore
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls) -> None:
         if not hasattr(cls, "status_code") or cls.status_code is None:
             raise AttributeError("`status_code` must be defined in subclass.")
-        return super().__init_subclass__(**kwargs)
+        return super().__init_subclass__()
 
 
 class GenericHTTPException(BaseGenericHTTPException):

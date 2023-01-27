@@ -109,7 +109,7 @@ def just_a_route():
 > You still need to configure the route class for every `fastapi.APIRouter`.
 
 ### About `response_model_exclude`, `response_model_include` and others `response_model_*` parametrs
-When using response fields modifiers on-the-fly. you must consider that the final output of `response_model` will be wrapped by the conmfugred ResponseSchema.
+When using response fields modifiers on-the-fly. you must consider that the final output of `response_model` will be wrapped by the configured ResponseSchema.
 
 For this snippet:
 ```py

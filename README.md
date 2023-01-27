@@ -1,10 +1,7 @@
 # ☄️ FastAPI Response Schema
-[![PyPI](https://img.shields.io/pypi/v/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/releases) [![Commits](https://img.shields.io/github/last-commit/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/commit/master) [![PyPI - Downloads](https://img.shields.io/pypi/dd/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/)[![Tests](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml)[![Lint](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml)
+[![PyPI](https://img.shields.io/pypi/v/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/releases) [![Commits](https://img.shields.io/github/last-commit/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/commit/master) [![Tests](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml)[![Lint](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml)
 
-> FastAPI Response Schema is still **experimental and in active development**. 
-> 
-> Consider `1.x.x` versions for *Alpha* and *Beta* stages.
-> Stable API functionality and usage will be released from version `2.0.0`.
+> FastAPI Response Schema is in production now! 
 
 ## Overview
 This package extends the [FastAPI](https://fastapi.tiangolo.com/) response model schema allowing you to have a common response wrapper via a `fastapi.routing.APIRoute`.

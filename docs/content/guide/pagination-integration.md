@@ -68,12 +68,39 @@ from fastapi_responseschema.integrations.pagination import PagedSchemaAPIRoute
 
 ...
 
-class Route(PagedSchemaAPIRoute):
+class PagedRoute(PagedSchemaAPIRoute):
     response_schema = ResponseSchema
     paged_response_schema = PagedResponseSchema
 
 ``` 
 This `PagedSchemaAPIRoute` can be integrated in fastapi as a `SchemaAPIRoute`.
+
+
+## Usage
+The `AbstractPagedResponseSchema` class inherits from the `fastapi_pagination.bases.AbstractPage` and has to be used to configure the pagination correctly.
+
+
+```py
+from pydantic import BaseModel
+from fastapi import FastAPI
+from fastapi_pagination import paginate, add_pagination
+from fastapi_responseschema import wrap_app_responses
+from .myroutes import PagedRoute  # the SchemaAPIRoute you defined
+from .myschemas import PagedResponseSchema  # the ResponseSchema you defined
+
+app = FastAPI()
+wrap_app_responses(app, route_class=PagedRoute)
+
+class Bird(BaseModel):
+    id: int
+
+
+@app.get("/birds", response_model=PagedResponseSchema[Bird])
+def list_birds_w_pagination():
+    return paginate([Bird(id=n) for n in range(1, 3000)])
+
+add_pagination(app)
+```
 
 
 ## `PaginationParams` and `PaginationMetadata`

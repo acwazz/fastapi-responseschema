@@ -1,5 +1,5 @@
 from math import ceil
-from typing import Generic, TypeVar, Type, Any, Optional, ClassVar
+from typing import Generic, TypeVar, Type, Any, Optional, ClassVar, Protocol
 from fastapi import Query
 from fastapi_pagination.bases import AbstractPage, AbstractParams, RawParams
 from fastapi_pagination.links.bases import Links, create_links
@@ -10,8 +10,15 @@ from fastapi_responseschema.interfaces import AbstractResponseSchema
 
 
 T = TypeVar("T")
-TPaginationMetadata = TypeVar("TPaginationMetadata", bound="PaginationMetadata")
 TPagedResponseSchema = TypeVar("TPagedResponseSchema", bound="AbstractPagedResponseSchema")
+
+
+class SupportedParams(Protocol):  # pragma: no cover
+    page: int
+    page_size: int
+
+    def to_raw_params(self) -> RawParams:
+        pass
 
 
 class PaginationMetadata(BaseModel):
@@ -24,21 +31,21 @@ class PaginationMetadata(BaseModel):
         links (dict): Object containing pagination links.
     """
 
-    total: conint(ge=0)
-    page_size: conint(ge=0)
-    page: conint(ge=1)
+    total: conint(ge=0)  # type: ignore
+    page_size: conint(ge=0)  # type: ignore
+    page: conint(ge=1)  # type: ignore
     links: Links
 
     @classmethod
-    def from_abstract_page_create(cls, total: int, params: AbstractParams) -> TPaginationMetadata:
+    def from_abstract_page_create(cls, total: int, params: SupportedParams) -> "PaginationMetadata":
         """Create pagination metadata from an abstract page.
 
         Args:
             total (int): Total number of items.
-            params (AbstractParams): A FastaAPI Pagination Params instance.
+            params (SupportedParams): A FastaAPI Pagination Params instance.
 
         Returns:
-            TPaginationMetadata: PaginationMetadata instance
+            PaginationMetadata: PaginationMetadata instance
         """
         return cls(
             total=total,
@@ -76,6 +83,9 @@ class AbstractPagedResponseSchema(AbstractPage[T], AbstractResponseSchema[T], Ge
 
     __params_type__: ClassVar[Type[AbstractParams]] = PaginationParams
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class PagedSchemaAPIRoute(SchemaAPIRoute):
     """A SchemaAPIRoute class with pagination support.
@@ -99,16 +109,16 @@ class PagedSchemaAPIRoute(SchemaAPIRoute):
         router = APIRouter(route_class=MyAPIRoute)
     """
 
-    response_schema: Type[AbstractResponseSchema[Any]] = None
-    error_response_schema: Optional[Type[AbstractResponseSchema[Any]]]
     paged_response_schema: Type[AbstractPagedResponseSchema[Any]]
+    response_schema: Optional[Type[AbstractResponseSchema[Any]]] = None  # type: ignore
+    error_response_schema: Optional[Type[AbstractResponseSchema[Any]]] = None
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls) -> None:
         if not hasattr(cls, "paged_response_schema") or getattr(cls, "paged_response_schema") is None:
             raise AttributeError("`paged_response_schema` must be defined in subclass.")
-        if getattr(cls, "response_schema") is None:
+        if not hasattr(cls, "response_schema") or getattr(cls, "response_schema") is None:
             raise AttributeError("`response_schema` must be defined in subclass.")
-        return super().__init_subclass__(**kwargs)
+        return super().__init_subclass__()
 
     def get_wrapper_model(self, is_error: bool, response_model: Type[Any]) -> Type[AbstractResponseSchema[Any]]:
         if issubclass(response_model, AbstractPagedResponseSchema):

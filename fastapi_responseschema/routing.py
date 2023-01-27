@@ -3,9 +3,12 @@ import asyncio
 from typing import Callable, Optional, Any, Type, List, Sequence, Dict, Union, Set
 from functools import wraps
 from pydantic.utils import lenient_issubclass, lenient_isinstance
+from starlette.routing import BaseRoute
 from fastapi import params, Response
-from fastapi.encoders import DictIntStrAny, SetIntStr, jsonable_encoder
+from fastapi.encoders import DictIntStrAny, SetIntStr
 from fastapi.routing import APIRoute
+from fastapi.responses import JSONResponse
+from fastapi.datastructures import DefaultPlaceholder, Default
 from .interfaces import AbstractResponseSchema, ResponseWithMetadata
 
 
@@ -33,10 +36,10 @@ class SchemaAPIRoute(APIRoute):
     response_schema: Type[AbstractResponseSchema[Any]]
     error_response_schema: Optional[Type[AbstractResponseSchema[Any]]] = None
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls) -> None:
         if not hasattr(cls, "response_schema"):
             raise AttributeError("`response_schema` must be defined in subclass.")
-        return super().__init_subclass__(**kwargs)
+        return super().__init_subclass__()
 
     def is_error_state(self, status_code: Optional[int] = None) -> bool:
         """Handles the error_state for the operation evaluating the status_code.
@@ -80,10 +83,15 @@ class SchemaAPIRoute(APIRoute):
         Returns:
             Type[AbstractResponseSchema[Any]]: The response_model wrapped in response_schema
         """
-        return wrapper_model[response_model]
+        # due to: https://github.com/python/mypy/issues/12392 FIXME: when gets fixed
+        return wrapper_model[response_model]  # type: ignore
 
     def _wrap_endpoint_output(
-        self, endpoint_output: Any, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params
+        self,
+        endpoint_output: Any,
+        wrapper_model: Type[AbstractResponseSchema],
+        response_model: Type[Any],
+        **params: Any,
     ) -> Any:
         if lenient_isinstance(endpoint_output, ResponseWithMetadata):  # Handling the `respond` function
             params.update(endpoint_output.metadata)
@@ -91,20 +99,22 @@ class SchemaAPIRoute(APIRoute):
         else:
             content = endpoint_output
         params["status_code"] = params.get("status_code") or 200
-        return wrapper_model[response_model].from_api_route(
+        # due to: https://github.com/python/mypy/issues/12392 FIXME: when gets fixed
+        wrapped_model = wrapper_model[response_model]  # type: ignore
+        return wrapped_model.from_api_route(
             content=content,
             response_model=response_model,
             **params,
         )
 
     def _create_endpoint_handler_decorator(
-        self, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params
+        self, wrapper_model: Type[AbstractResponseSchema], response_model: Type[Any], **params: Any
     ) -> Callable:
-        def decorator(func):
+        def decorator(func: Callable) -> Callable:
             if asyncio.iscoroutinefunction(func):  # Not blocking asncyio loop
 
                 @wraps(func)
-                async def wrapper(*args, **kwargs):
+                async def wrapper(*args: Any, **kwargs: Any) -> Any:
                     endpoint_output = await func(*args, **kwargs)
                     return self._wrap_endpoint_output(
                         endpoint_output=endpoint_output,
@@ -116,7 +126,7 @@ class SchemaAPIRoute(APIRoute):
             else:
 
                 @wraps(func)
-                def wrapper(*args, **kwargs):
+                def wrapper(*args: Any, **kwargs: Any) -> Any:
                     endpoint_output = func(*args, **kwargs)
                     return self._wrap_endpoint_output(
                         endpoint_output=endpoint_output,
@@ -136,7 +146,7 @@ class SchemaAPIRoute(APIRoute):
         *,
         response_model: Optional[Type[Any]] = None,
         status_code: int = 200,
-        tags: Optional[List[str]] = None,
+        tags: Optional[List[Any]] = None,
         dependencies: Optional[Sequence[params.Depends]] = None,
         summary: Optional[str] = None,
         description: Optional[str] = None,
@@ -153,9 +163,9 @@ class SchemaAPIRoute(APIRoute):
         response_model_exclude_defaults: bool = False,
         response_model_exclude_none: bool = False,
         include_in_schema: bool = True,
-        response_class: Optional[Type[Response]] = None,
+        response_class: Union[Type[Response], DefaultPlaceholder] = Default(JSONResponse),
         dependency_overrides_provider: Optional[Any] = None,
-        callbacks: Optional[List["APIRoute"]] = None,
+        callbacks: Optional[List["BaseRoute"]] = None,
         **kwargs: Any,
     ) -> None:
         if response_model and not lenient_issubclass(

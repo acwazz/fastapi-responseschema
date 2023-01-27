@@ -25,10 +25,12 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
         request: Request, exc: Union[RequestValidationError, StarletteHTTPException, BaseGenericHTTPException]
     ) -> JSONResponse:
         status_code = getattr(exc, "status_code") if not isinstance(exc, RequestValidationError) else 422
+        # due to: https://github.com/python/mypy/issues/12392 FIXME: when gets fixed
+        model = error_response_schema[Any]  # type: ignore
         return JSONResponse(
-            content=error_response_schema[Any].from_exception_handler(request=request, exception=exc).dict(),
+            content=model.from_exception_handler(request=request, exception=exc).dict(),
             status_code=status_code,
-            headers=getattr(exc, "headers", None),
+            headers=getattr(exc, "headers", dict()),
         )
 
     app.add_exception_handler(RequestValidationError, exception_handler)
@@ -37,12 +39,12 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
     return app
 
 
-def wrap_app_responses(app: FastAPI, route_class: SchemaAPIRoute) -> FastAPI:
+def wrap_app_responses(app: FastAPI, route_class: Type[SchemaAPIRoute]) -> FastAPI:
     """Wraps all app defaults responses
 
     Args:
         app (FastAPI): A FastAPI application instance.
-        route_class (SchemaAPIRoute): The SchemaAPIRoute with your response schemas.
+        route_class (Type[SchemaAPIRoute]): The SchemaAPIRoute with your response schemas.
 
     Returns:
         FastAPI: The application instance.

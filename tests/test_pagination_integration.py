@@ -88,11 +88,18 @@ def test_wrong_subsclassing_paged_schema():
             response_schema = SimpleResponseSchema
 
 
-def test_wrong_subsclassing_response_schema():
+def test_subsclassing_response_schema_is_none():
     with pytest.raises(AttributeError):
 
         class Route(PagedSchemaAPIRoute):
             response_schema = None
+            paged_response_schema = SimplePagedResponseSchema
+
+
+def test_subsclassing_response_schema_is_unset():
+    with pytest.raises(AttributeError):
+
+        class Route(PagedSchemaAPIRoute):
             paged_response_schema = SimplePagedResponseSchema
 
 
