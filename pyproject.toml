@@ -11,7 +11,7 @@ homepage = "https://acwazz.github.io/fastapi-responseschema/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = ">=0.89.1,<0.92.0"
+fastapi = ">=0.89.1,<0.93.0"
 fastapi-pagination = {version = "^0", optional = true}
 
 [tool.poetry.extras]
