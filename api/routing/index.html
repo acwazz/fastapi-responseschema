@@ -611,7 +611,7 @@
 
 
 
-  <a href="https://github.com/acwazz/fastapi-responseschema/blob/None/docs/content/api/routing.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/acwazz/fastapi-responseschema/blob/master/docs/content/api/routing.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
@@ -623,7 +623,7 @@
 <h2 id="class-schemaapiroute">Class SchemaAPIRoute</h2>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SchemaAPIRoute</span><span class="p">(</span><span class="n">APIRoute</span><span class="p">)</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/15d61e1f6bea38944763de96ca3a2a397170be8d/docs/../fastapi_responseschema/routing.py#L15">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/master/docs/../fastapi_responseschema/routing.py#L15">[view_source]</a></p>
 <p>An APIRoute class to wrap response_model(s) with a ResponseSchema
 Must be subclassed setting at least SchemaAPIRoute.response_model.</p>
 <p>Usage:</p>
@@ -646,7 +646,7 @@ router = APIRouter(route_class=MyAPIRoute)
 <h4 id="is_error_state">is_error_state</h4>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_error_state</span><span class="p">(</span><span class="n">status_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/15d61e1f6bea38944763de96ca3a2a397170be8d/docs/../fastapi_responseschema/routing.py#L44">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/master/docs/../fastapi_responseschema/routing.py#L44">[view_source]</a></p>
 <p>Handles the error_state for the operation evaluating the status_code.
 This method gets called internally and can be overridden to modify the error state of the operation.</p>
 <p><strong>Arguments</strong>:</p>
@@ -664,7 +664,7 @@ This method gets called internally and can be overridden to modify the error sta
         <span class="n">is_error</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">response_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/15d61e1f6bea38944763de96ca3a2a397170be8d/docs/../fastapi_responseschema/routing.py#L56">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/master/docs/../fastapi_responseschema/routing.py#L56">[view_source]</a></p>
 <p>Implements the ResponseSchema selection logic.
 This method gets called internally and can be overridden to gain control over the ResponseSchema selection logic.</p>
 <p><strong>Arguments</strong>:</p>
@@ -683,7 +683,7 @@ This method gets called internally and can be overridden to gain control over th
         <span class="n">wrapper_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
         <span class="n">response_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">AbstractResponseSchema</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/15d61e1f6bea38944763de96ca3a2a397170be8d/docs/../fastapi_responseschema/routing.py#L71">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/master/docs/../fastapi_responseschema/routing.py#L71">[view_source]</a></p>
 <p>Wraps the given response_model with the ResponseSchema.
 This method gets called internally and can be overridden to gain control over the response_model wrapping logic.</p>
 <p><strong>Arguments</strong>:</p>
@@ -703,7 +703,7 @@ This method gets called internally and can be overridden to gain control over th
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">respond</span><span class="p">(</span><span class="n">response_content</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="o">**</span><span class="n">metadata</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseWithMetadata</span>
 </code></pre></div>
-<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/15d61e1f6bea38944763de96ca3a2a397170be8d/docs/../fastapi_responseschema/routing.py#L230">[view_source]</a></p>
+<p><a href="https://github.com/acwazz/fastapi-responseschema/blob/master/docs/../fastapi_responseschema/routing.py#L230">[view_source]</a></p>
 <p>Returns the response content with optional metadata</p>
 <p><strong>Arguments</strong>:</p>
 <ul>
