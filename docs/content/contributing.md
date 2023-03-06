@@ -1,4 +1,4 @@
-@cat ../../README.md :with slice_lines = "117:126"
+@cat ../../README.md :with slice_lines = "117:125"
 
 ## Guidelines
 - Try to adhere as much as possible to the Python style and language conventions.

@@ -6,3 +6,5 @@ updates:
       interval: "weekly"
       day: "friday"
     target-branch: "master"
+    allow:
+      - dependency-type: production
