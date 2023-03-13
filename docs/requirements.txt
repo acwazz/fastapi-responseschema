@@ -1,4 +1,4 @@
 mkdocs
 mkdocs-material
 pydoc-markdown==4.6.3
-novella==0.2.3
+novella==0.2.5
