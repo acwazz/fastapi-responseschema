@@ -901,14 +901,14 @@ files = [
 
 [[package]]
 name = "novella"
-version = "0.2.3"
+version = "0.2.5"
 description = "Linear build system for Markdown preprocessing and static site generation."
 category = "dev"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "novella-0.2.3-py3-none-any.whl", hash = "sha256:1f72da3b8dc72e442ad6f00c50956e30190eb3ae4615fb152a6d2ba42ceef00c"},
-    {file = "novella-0.2.3.tar.gz", hash = "sha256:bbd604227d75cd081ee5342d529e5f7278239e053b0246bcc563bc12060ddebd"},
+    {file = "novella-0.2.5-py3-none-any.whl", hash = "sha256:a4473ce883994730da22b3f69c43a73a54b112dfa5a575bdc6f7d367059420f5"},
+    {file = "novella-0.2.5.tar.gz", hash = "sha256:3c690a97852d6c55ac32820da58126a0a0db3fe7ce87eea2e9a21b3580d9fe19"},
 ]
 
 [package.dependencies]
