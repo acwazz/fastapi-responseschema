@@ -9,7 +9,7 @@ on:
       - "master"
 
 jobs:
-  lint:
+  type-checking:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
