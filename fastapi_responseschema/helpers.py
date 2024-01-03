@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import Any, Type, Union
-from fastapi import FastAPI, Request
+from typing import Any, Type
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -21,9 +21,7 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
         FastAPI: The application instance
     """
 
-    async def exception_handler(
-        request: Request, exc: Union[RequestValidationError, StarletteHTTPException, BaseGenericHTTPException]
-    ) -> JSONResponse:
+    async def exception_handler(request, exc):
         status_code = getattr(exc, "status_code") if not isinstance(exc, RequestValidationError) else 422
         # due to: https://github.com/python/mypy/issues/12392 FIXME: when gets fixed
         model = error_response_schema[Any]  # type: ignore

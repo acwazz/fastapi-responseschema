@@ -5,10 +5,10 @@ from abc import ABC, abstractmethod
 from fastapi import Request, Response
 from pydantic import BaseModel
 from pydantic.generics import GenericModel
-from fastapi.encoders import DictIntStrAny, SetIntStr
 from fastapi.exceptions import RequestValidationError, HTTPException as FastAPIHTTPException
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from .exceptions import BaseGenericHTTPException
+from ._compat import DictIntStrAny, SetIntStr
 
 T = TypeVar("T")
 TResponseSchema = TypeVar("TResponseSchema", bound="AbstractResponseSchema")
@@ -97,9 +97,12 @@ class AbstractResponseSchema(GenericModel, Generic[T], ABC):
             name (Optional[str], optional): Operation name. Defaults to None.
             methods (Optional[Union[Set[str], List[str]]], optional): supoported methods. Defaults to None.
             operation_id (Optional[str], optional): OpenAPI operation ID. Defaults to None.
-            response_model_include (Optional[Union[SetIntStr, DictIntStrAny]], optional): `response_model` Included fields. Defaults to None.
-            response_model_exclude (Optional[Union[SetIntStr, DictIntStrAny]], optional): `response_model` Excluded fields. Defaults to None.
-            response_model_by_alias (bool, optional): Enable or disable field aliases in `response_model`. Defaults to True.
+            response_model_include (Optional[Union[SetIntStr, DictIntStrAny]], optional): `response_model` \
+                Included fields. Defaults to None.
+            response_model_exclude (Optional[Union[SetIntStr, DictIntStrAny]], optional): `response_model` \
+                Excluded fields. Defaults to None.
+            response_model_by_alias (bool, optional): Enable or disable field aliases in `response_model`. \
+                Defaults to True.
             response_model_exclude_unset (bool, optional): excludes unset values in `response_model`. Defaults to False.
             response_model_exclude_defaults (bool, optional): excludes default values in `response_model`. Defaults to False.
             response_model_exclude_none (bool, optional): excludes None values in `response_model`. Defaults to False.

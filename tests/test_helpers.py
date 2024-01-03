@@ -78,7 +78,7 @@ client2 = TestClient(app2)
 
 
 @app2.get("/starlette-exception")
-def raise_starlette_exception():
+def raise_starlette_exception_2():
     raise StarletteHTTPException(400, "Error")
 
 

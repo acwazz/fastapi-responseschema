@@ -11,15 +11,15 @@ repos:
       )$
   - id: trailing-whitespace
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.272
+  rev: v0.1.11
   hooks:
     - id: ruff
       args: [ "--line-length=120", "--target-version=py311" ]
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.3.0
+  rev: v1.8.0
   hooks:
     - id: mypy
-      args: ["--disallow_untyped_defs", "--ignore-missing-imports", "--exclude '/tests/'"]
+      args: ["--check-untyped-defs", "--ignore-missing-imports"]
       exclude: ^tests/
 -   repo: https://github.com/psf/black
     rev: "23.3.0"

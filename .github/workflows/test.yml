@@ -24,9 +24,6 @@ jobs:
         run: |
           pip install -U poetry
           poetry install -E pagination
-      - name: Type checking
-        run: |
-          poetry run mypy fastapi_responseschema
       - name: Testing
         run: |
-          poetry run pytest
+          poetry run tox

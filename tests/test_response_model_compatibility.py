@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Any
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi_responseschema import SchemaAPIRoute, wrap_app_responses
@@ -21,23 +23,23 @@ wrap_app_responses(app, Route)
 
 
 @app.get("/model-exclude", response_model=RModel, response_model_exclude={"data": {"name"}})
-def filter_via_response_model_exclude():
-    return {"id": 1, "name": "excluded"}
+def filter_via_response_model_exclude() -> dict[str, str]:
+    return {"id": "1", "name": "excluded"}
 
 
 @app.get("/model-filters", response_model=RModel)
-def filter_via_response_model_schema():
-    return {"id": 1, "name": "ok", "hidden": True}
+def filter_via_response_model_schema() -> dict[str, Any]:
+    return {"id": "1", "name": "ok", "hidden": True}
 
 
 client = TestClient(app)
 
 
-def test_response_model_exclude_works():
+def test_response_model_exclude_works() -> None:
     r = client.get("/model-exclude")
     assert r.json() == {"error": False, "data": {"id": "1"}}
 
 
-def test_inner_response_model_schema_not_overridden():
+def test_inner_response_model_schema_not_overridden() -> None:
     r = client.get("/model-filters")
     assert r.json() == {"error": False, "data": {"id": "1", "name": "ok"}}

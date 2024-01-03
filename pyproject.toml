@@ -11,14 +11,14 @@ homepage = "https://acwazz.github.io/fastapi-responseschema/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = ">=0.89.1,<0.96.0"
+fastapi = ">=0.89.1"
 fastapi-pagination = {version = "^0", optional = true}
 
 [tool.poetry.extras]
 pagination = ["fastapi-pagination"]
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^0.990"
+mypy = "^1.8.0"
 pydoc-markdown = "^4.6.4"
 novella = "^0.2.3"
 pytest = "^7.2.0"
@@ -32,6 +32,8 @@ mkdocs-material = ">=8.5.10,<10.0.0"
 black = "^22.10.0"
 httpx = "^0.23.3"
 pre-commit = "^3.3.3"
+tox = "^4.11.4"
+ruff = "^0.1.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -57,8 +59,15 @@ type = "mkdocs"
 
 [tool.mypy]
 exclude = "tests"
-disallow_untyped_defs = true
+check_untyped_defs = true
 ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 120
+ignore = []
+respect-gitignore = true
+target-version = "py38"
+src = ["fastapi_responseschema", "tests"]
 
 [tool.black]
 line-length = 120
@@ -86,3 +95,34 @@ extend-exclude = '''
 )/
 '''
 
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    min_version = 4.0
+    env_list =
+        py312
+        py311
+        py310
+        py39
+        type
+        fastapi-89
+        fastapi-96
+        fastapi-100
+
+    [testenv]
+    deps =
+        pytest
+        pytest-cov
+        pytest-asyncio
+        requests
+        httpx
+        fastapi-pagination
+        fastapi-89: fastapi>=0.89,<0.96
+        fastapi-96: fastapi>=0.96,<0.100
+        fastapi-100: fastapi>=0.100,<0.110
+    commands = pytest tests
+
+    [testenv:type]
+    deps = mypy
+    commands = mypy .
+"""

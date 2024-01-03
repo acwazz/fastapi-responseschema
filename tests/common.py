@@ -1,4 +1,4 @@
-from typing import Any, TypeVar, Generic
+from typing import TypeVar, Generic
 from pydantic import BaseModel
 from fastapi_responseschema.interfaces import AbstractResponseSchema
 

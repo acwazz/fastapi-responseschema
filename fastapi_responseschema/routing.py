@@ -5,11 +5,11 @@ from functools import wraps
 from pydantic.utils import lenient_issubclass, lenient_isinstance
 from starlette.routing import BaseRoute
 from fastapi import params, Response
-from fastapi.encoders import DictIntStrAny, SetIntStr
 from fastapi.routing import APIRoute
 from fastapi.responses import JSONResponse
 from fastapi.datastructures import DefaultPlaceholder, Default
 from .interfaces import AbstractResponseSchema, ResponseWithMetadata
+from ._compat import DictIntStrAny, SetIntStr
 
 
 class SchemaAPIRoute(APIRoute):
