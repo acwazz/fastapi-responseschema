@@ -8,6 +8,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .routing import SchemaAPIRoute
 from .exceptions import BaseGenericHTTPException
 from .interfaces import AbstractResponseSchema
+from ._compat import model_to_dict
 
 
 def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractResponseSchema]) -> FastAPI:
@@ -26,7 +27,7 @@ def wrap_error_responses(app: FastAPI, error_response_schema: Type[AbstractRespo
         # due to: https://github.com/python/mypy/issues/12392 FIXME: when gets fixed
         model = error_response_schema[Any]  # type: ignore
         return JSONResponse(
-            content=model.from_exception_handler(request=request, exception=exc).dict(),
+            content=model_to_dict(model.from_exception_handler(request=request, exception=exc)),
             status_code=status_code,
             headers=getattr(exc, "headers", dict()),
         )

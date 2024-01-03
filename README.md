@@ -1,12 +1,11 @@
 # ☄️ FastAPI Response Schema
 [![PyPI](https://img.shields.io/pypi/v/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fastapi-responseschema)](https://pypi.org/project/fastapi-responseschema/) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/releases) [![Commits](https://img.shields.io/github/last-commit/acwazz/fastapi-responseschema)](https://github.com/acwazz/fastapi-responseschema/commit/master) [![Tests](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/test.yml)[![Lint](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml/badge.svg)](https://github.com/acwazz/fastapi-responseschema/actions/workflows/lint.yml)
 
-> FastAPI Response Schema is in production now! 
 
 ## Overview
 This package extends the [FastAPI](https://fastapi.tiangolo.com/) response model schema allowing you to have a common response wrapper via a `fastapi.routing.APIRoute`.
 
-This library supports Python versions **>=3.8** and FastAPI versions **>=0.66.0**.
+This library supports Python versions **>=3.8** and FastAPI versions **>=0.89.1**.
 
 
 ## Getting started

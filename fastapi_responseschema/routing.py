@@ -2,14 +2,13 @@ from __future__ import annotations
 import asyncio
 from typing import Callable, Optional, Any, Type, List, Sequence, Dict, Union, Set
 from functools import wraps
-from pydantic.utils import lenient_issubclass, lenient_isinstance
 from starlette.routing import BaseRoute
 from fastapi import params, Response
 from fastapi.routing import APIRoute
 from fastapi.responses import JSONResponse
 from fastapi.datastructures import DefaultPlaceholder, Default
 from .interfaces import AbstractResponseSchema, ResponseWithMetadata
-from ._compat import DictIntStrAny, SetIntStr
+from ._compat import DictIntStrAny, SetIntStr, lenient_issubclass, lenient_isinstance
 
 
 class SchemaAPIRoute(APIRoute):

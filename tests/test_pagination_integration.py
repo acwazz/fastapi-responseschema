@@ -26,7 +26,7 @@ class SimplePagedResponseSchema(AbstractPagedResponseSchema[T], Generic[T]):
     pagination: PaginationMetadata
 
     @classmethod
-    def create(cls, items: Sequence[T], total: int, params: PaginationParams):
+    def create(cls, items: Sequence[T], params: PaginationParams, total: int):  #
         return cls(
             data=items, error=False, pagination=PaginationMetadata.from_abstract_page_create(total=total, params=params)
         )

@@ -4,11 +4,10 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from fastapi import Request, Response
 from pydantic import BaseModel
-from pydantic.generics import GenericModel
 from fastapi.exceptions import RequestValidationError, HTTPException as FastAPIHTTPException
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from .exceptions import BaseGenericHTTPException
-from ._compat import DictIntStrAny, SetIntStr
+from ._compat import DictIntStrAny, SetIntStr, PydanticGenericModel
 
 T = TypeVar("T")
 TResponseSchema = TypeVar("TResponseSchema", bound="AbstractResponseSchema")
@@ -50,7 +49,7 @@ class HTTPExceptionAdapter:
         )
 
 
-class AbstractResponseSchema(GenericModel, Generic[T], ABC):
+class AbstractResponseSchema(PydanticGenericModel, Generic[T], ABC):
     """Abstract generic model for building response schema interfaces."""
 
     __inner_type__: ClassVar[Union[Type[Any], Tuple[Type[Any], ...]]]

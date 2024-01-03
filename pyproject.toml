@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-responseschema"
-version = "2.0.0"
+version = "2.1.0"
 description = "Generic and common response schemas for FastAPI"
 authors = ["Emanuele Addis <ustarjem.acwazz@gmail.com>", "Florin Cotovanu <flc995@gmail.com>"]
 license = "MIT"
