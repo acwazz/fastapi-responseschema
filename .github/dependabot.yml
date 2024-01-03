@@ -6,4 +6,4 @@ updates:
       interval: "monthly"
     target-branch: "master"
     allow:
-      - dependency-type: all
+      - dependency-type: production
